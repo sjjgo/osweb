@@ -203,8 +203,10 @@ export default class Loop extends Item {
             this._runner._debugger.addError(
               'Failed to evaluate expression in in loop item: ' + this.name + ' (' + value + ')')
           }
+        } else {
+          // Evaluate variabels potentially available in value.
+          value = this._runner._syntax.eval_text(value)
         }
-
         // Set the variable.
         this.experiment.vars.set(variable, value)
       }
