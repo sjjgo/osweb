@@ -58,7 +58,8 @@ export function stack (srcMatrix) {
  * @returns {array}
  */
 export function fullfactorial (matrix) {
-  return combos(unstack(matrix))
+  const result = combos(unstack(matrix))
+  return result
 }
 
 /**
@@ -123,7 +124,7 @@ export function shuffleHoriz (matrix, columns) {
  *
  * @export
  * @param {array} matrix
- * @param {array} params
+ * @param {string} col
  * @returns array
  */
 export function sortCol (matrix, col) {
@@ -175,7 +176,8 @@ export function reverseRows (matrix, columns) {
  *
  * @export
  * @param {array} matrix
- * @param {array} params
+ * @param {number} amount
+ * @param {string} column
  * @returns array
  */
 export function roll (matrix, amount, column) {
@@ -210,7 +212,7 @@ export function roll (matrix, amount, column) {
  * Roll array contents forward or backward by the specified amount
  *
  * @param {array} list
- * @param {int} list
+ * @param {number} amount
  * @returns {array}
  */
 function rollN (list, amount) {
