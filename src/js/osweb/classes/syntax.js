@@ -239,8 +239,7 @@ export default class Syntax {
     for (var i = 0; i < tokens.length; i++) {
       var value = tokens[i]
       // Monster regex, splits into key/value pair.
-      var parsed = value.split(/(?:("[^"\\]*(?:\\.[^"\\]*)*"))|(?:(\w+)=(?:(?:(-?\d*\.{0,1}\d+)|(\w+))|("[^"\\]*(?:\\.[^"\\]*)*")))/gm).filter(Boolean)
-
+      let parsed = value.split(/(?:("[^"\\]*(?:\\.[^"\\]*)*"))|(?:(\w+)=(?:(?:(-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)|(\w+))|("[^"\\]*(?:\\.[^"\\]*)*")))/gm).filter(Boolean)
       // parsed will have length 1 if the variable has no keyword, and will be
       // of length 2 (split over the = symbol) if the variable had a keyword
       if (parsed.length < 2) {

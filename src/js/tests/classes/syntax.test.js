@@ -110,6 +110,10 @@ describe('Syntax', function () {
         'test': '"quoted"'
       })
     })
+    it('should be able to parse numbers in scientific notation', function () {
+      checkCmd('test test=-9e-9',
+        'test', [], {"test": -9e-9})
+    })    
     it("should throw an exception when string can't be parsed", function () {
       expect(function () {
         checkCmd('widget 0 0 1 1 label text="Tést 123',
