@@ -77,7 +77,7 @@ export default class GenericResponse extends Item {
       const allowed_responses = String(this.vars.get('allowed_responses')).split(';')
         .map(item => (typeof item === 'string')
           ? item.replace(/^"(.*)"$/g, '$1').trim()
-          : item)
+          : item).filter(Boolean)
       if (this.vars.duration === 'keypress') {
         // this._allowed_responses = allowed_responses;
         this._allowed_responses = this._keyboard._get_default_from_synoniem(allowed_responses)
