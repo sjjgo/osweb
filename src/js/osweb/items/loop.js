@@ -252,20 +252,17 @@ export default class Loop extends Item {
       // Add the leftover repeats.
       const partialRepeats = this.vars.get('repeat') - wholeRepeats
       if (partialRepeats > 0) {
-        const allCycles = Array.apply(null, {
-          length: this.vars.cycles
-        }).map(Number.call, Number)
+        // Get the amount of cycles to still repeat
         const remainder = Math.floor(this.vars.cycles * partialRepeats)
-        for (let i = 0; i < remainder; i++) {
-          // Calculate random position.
-          const position = Math.floor(Math.random() * allCycles.length)
-          // Add position to cycles.
-          this._cycles.push(position)
-          // Remove position from array.
-          allCycles.splice(position, 1)
+        // Get this first amount of itemns from the current cycle list.
+        let repeatCycles = [...this._cycles].splice(0, remainder)
+        // Shuffle if necessary
+        if (this.vars.get('order') === 'random') {
+          repeatCycles = shuffle(repeatCycles)
         }
+        // Add these cycles to the original array
+        this._cycles = [...this._cycles, ...repeatCycles]
       }
-
       this._initialized = true
     }
 
