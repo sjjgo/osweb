@@ -221,6 +221,7 @@ export default class Loop extends Item {
       this._runner._debugger.addError('Could not find an item which is called by loop item: ' +
       this.name + ' (' + this.vars.item + ')')
     }
+    this._initialized = false
     super.prepare()
     this.set_item_onset()
   }
@@ -230,11 +231,6 @@ export default class Loop extends Item {
     super.run()
 
     if (!this._initialized) {
-      // Randomize the list if necessary.
-      if (this.vars.get('order') === 'random') {
-        this._cycles = shuffle(this._cycles)
-      }
-
       // Perform the operations
       this.matrix = this._operations.reduce((mtrx, [func, args]) =>
         func(mtrx, ...this._eval_args(args)), this.matrix)
@@ -249,18 +245,28 @@ export default class Loop extends Item {
         }
       }
 
+      // Randomize the list if necessary.
+      if (this.vars.get('order') === 'random') {
+        this._cycles = shuffle(this._cycles)
+      }
+
       // Add the leftover repeats.
       const partialRepeats = this.vars.get('repeat') - wholeRepeats
       if (partialRepeats > 0) {
         // Get the amount of cycles to still repeat
         const remainder = Math.floor(this.vars.cycles * partialRepeats)
-        // Get this first amount of itemns from the current cycle list.
-        let repeatCycles = [...this._cycles].splice(0, remainder)
-        // Shuffle if necessary
+
+        let pool
         if (this.vars.get('order') === 'random') {
-          repeatCycles = shuffle(repeatCycles)
+          // For randomly ordered loops, shuffle the order of the pool
+          pool = shuffle(this._cycles)
+        } else {
+          // For sequential loops, just copy the items.
+          pool = [...this.cycles]
         }
-        // Add these cycles to the original array
+        // Get the required amount of cycles to repeat from the pool.
+        let repeatCycles = pool.splice(0, remainder)
+        // Add these cycles to the original cycles array
         this._cycles = [...this._cycles, ...repeatCycles]
       }
       this._initialized = true
