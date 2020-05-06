@@ -245,30 +245,31 @@ export default class Loop extends Item {
         }
       }
 
-      // Randomize the list if necessary.
-      if (this.vars.get('order') === 'random') {
-        this._cycles = shuffle(this._cycles)
-      }
-
       // Add the leftover repeats.
       const partialRepeats = this.vars.get('repeat') - wholeRepeats
       if (partialRepeats > 0) {
         // Get the amount of cycles to still repeat
         const remainder = Math.floor(this.vars.cycles * partialRepeats)
 
-        let pool
+        let cycles = [...Array(this.vars.cycles).keys()]
+
         if (this.vars.get('order') === 'random') {
           // For randomly ordered loops, shuffle the order of the pool
-          pool = shuffle(this._cycles)
-        } else {
-          // For sequential loops, just copy the items.
-          pool = [...this.cycles]
+          // This makes sure that the next step of determining the repeatcycles
+          // is a 'random selection without replacement'
+          cycles = shuffle(cycles)
         }
         // Get the required amount of cycles to repeat from the pool.
-        let repeatCycles = pool.splice(0, remainder)
+        let repeatCycles = cycles.splice(0, remainder)
         // Add these cycles to the original cycles array
         this._cycles = [...this._cycles, ...repeatCycles]
       }
+
+      // Shuffle everything!.
+      if (this.vars.get('order') === 'random') {
+        this._cycles = shuffle(this._cycles)
+      }
+
       this._initialized = true
     }
 
