@@ -110,6 +110,8 @@ export default class Loop extends Item {
         if ((lines[i] !== '') && (this.parse_variable(lines[i]) === false)) {
           const [instruction, ...params] = this.syntax.split(lines[i])
 
+          let cycle, name, value
+
           switch (instruction) {
           case 'run':
             if (params.length > 0) this.vars.item = params[0]
@@ -119,9 +121,9 @@ export default class Loop extends Item {
               this._runner._debugger.addError(`Incorrect setcycle command in item ${this.name}`)
               break
             }
-            const cycle = params[0]
-            const name = params[1]
-            let value = this.syntax.remove_quotes(params[2])
+            cycle = params[0]
+            name = params[1]
+            value = this.syntax.remove_quotes(params[2])
             // Check if the value is numeric
             value = isNumber(value) ? Number(value) : value
             // If a python expression, convert to javascript.

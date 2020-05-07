@@ -201,7 +201,7 @@ export default class Screen {
   }
 
   /** Set the introscreen elements. */
-  _setupIntroScreen () {
+  _setupIntroScreen ( logoSrc ) {
     // Check if introscreen is used.
     if (this._active === true) {
       // Define introscreen elements.

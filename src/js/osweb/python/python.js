@@ -956,6 +956,7 @@ export default class PythonParser {
     // Initialize status property.
     this._node.status = (typeof this._node.status === 'undefined') ? 0 : this._node.status
 
+    let returnValue
     // Process the current status.
     switch (this._node.status) {
     case 0:
@@ -968,7 +969,7 @@ export default class PythonParser {
       break
     case 1:
       // Set return value.
-      const returnValue = { type: 'identifier', value: this._node.return_values[0].value }
+      returnValue = { type: 'identifier', value: this._node.return_values[0].value }
 
       // Set the return value
       this._function_stack.push(returnValue)
