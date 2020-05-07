@@ -163,9 +163,13 @@ export default class Keyboard {
    */
   _get_default_from_synoniem (responses) {
     const defaults = []
+    let synonyms
     for (let i = 0; i < responses.length; i++) {
-      const synoniem = this._synonyms(responses[i])
-      defaults.push(synoniem[0])
+      synonyms = this._synonyms(responses[i])
+      if (typeof synonyms === 'undefined') {
+        throw new ReferenceError(`Unknown key '${responses[i]}'`)
+      }
+      defaults.push(synonyms[0])
     }
     return defaults
   }
