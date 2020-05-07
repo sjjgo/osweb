@@ -200,7 +200,7 @@ export function roll (matrix, amount, column) {
     throw new TypeError(`column expects a string, was ${column}`)
   } else {
     const grouped = unstack(matrix)
-    if (!grouped.prototype.hasOwnProperty.call(column)) {
+    if (!Object.prototype.hasOwnProperty.call(grouped, column)) {
       throw new ReferenceError(`Could not find column ${column} in matrix`)
     }
     grouped[column] = rollN(grouped[column], amount)
@@ -241,7 +241,7 @@ export function weight (matrix, weightCol) {
   if (!isString(weightCol)) {
     throw new TypeError('Invalid argument passed to weight. Expects a column name')
   }
-  if (!matrix[0].prototype.hasOwnProperty.call(weightCol)) {
+  if (!Object.prototype.hasOwnProperty.call(matrix[0], weightCol)) {
     throw new ReferenceError(`Column '${weightCol}' not found in matrix`)
   }
   return matrix.reduce((result, item) => {
