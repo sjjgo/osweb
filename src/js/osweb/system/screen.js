@@ -99,55 +99,55 @@ export default class Screen {
       document.msFullscreenElement) {
       // Scale the canvas
       switch (this._runner._scaleMode) {
-        case 'noScale':
-          // Default mode, no scaling, canbas is centered on the screen.
-          this._runner._renderer.view.style.top = '0px'
-          this._runner._renderer.view.style.bottom = '0px'
-          this._runner._renderer.view.style.left = '0px'
-          this._runner._renderer.view.style.right = '0px'
-          this._runner._renderer.view.style.right = '0px'
-          this._runner._renderer.view.style.margin = 'auto'
-          this._runner._renderer.view.style.display = 'block'
-          this._runner._renderer.view.style.position = 'absolute'
-          this._runner._renderer.render(this._runner._experiment._currentCanvas._container)
-          break
-        case 'showAll':
-          // Default mode, no scaling, canbas is centered on the screen.
-          this._runner._renderer.view.style.top = '0px'
-          this._runner._renderer.view.style.bottom = '0px'
-          this._runner._renderer.view.style.left = '0px'
-          this._runner._renderer.view.style.right = '0px'
-          this._runner._renderer.view.style.right = '0px'
-          this._runner._renderer.view.style.margin = 'auto'
-          this._runner._renderer.view.style.display = 'block'
-          this._runner._renderer.view.style.position = 'absolute'
-          if ((this._runner._container.clientWidth - this._runner._experiment.vars.width) >
+      case 'noScale':
+        // Default mode, no scaling, canbas is centered on the screen.
+        this._runner._renderer.view.style.top = '0px'
+        this._runner._renderer.view.style.bottom = '0px'
+        this._runner._renderer.view.style.left = '0px'
+        this._runner._renderer.view.style.right = '0px'
+        this._runner._renderer.view.style.right = '0px'
+        this._runner._renderer.view.style.margin = 'auto'
+        this._runner._renderer.view.style.display = 'block'
+        this._runner._renderer.view.style.position = 'absolute'
+        this._runner._renderer.render(this._runner._experiment._currentCanvas._container)
+        break
+      case 'showAll':
+        // Default mode, no scaling, canbas is centered on the screen.
+        this._runner._renderer.view.style.top = '0px'
+        this._runner._renderer.view.style.bottom = '0px'
+        this._runner._renderer.view.style.left = '0px'
+        this._runner._renderer.view.style.right = '0px'
+        this._runner._renderer.view.style.right = '0px'
+        this._runner._renderer.view.style.margin = 'auto'
+        this._runner._renderer.view.style.display = 'block'
+        this._runner._renderer.view.style.position = 'absolute'
+        if ((this._runner._container.clientWidth - this._runner._experiment.vars.width) >
             (this._runner._container.clientHeight - this._runner._experiment.vars.height)) {
-            let ar = (this._runner._container.clientHeight / this._runner._experiment.vars.height)
-            this._runner._renderer.resize(Math.round(this._runner._experiment.vars.width * ar), this._runner._container.clientHeight)
-            this._runner._experiment._scale_x = Math.round(this._runner._experiment.vars.width * ar) / this._runner._experiment.vars.width
-            this._runner._experiment._scale_y = (this._runner._container.clientHeight / this._runner._experiment.vars.height)
-          } else {
-            let ar = (this._runner._container.clientWidth / this._runner._experiment.vars.width)
-            this._runner._renderer.resize(this._runner._container.clientWidth, Math.round(this._runner._experiment.vars.height * ar))
-            this._runner._experiment._scale_x = (this._runner._container.clientWidth / this._runner._experiment.vars.width)
-            this._runner._experiment._scale_y = Math.round(this._runner._experiment.vars.height * ar) / this._runner._experiment.vars.height
-          }
-          this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x
-          this._runner._experiment._currentCanvas._container.scale.y = this._runner._experiment._scale_y
-          this._runner._renderer.render(this._runner._experiment._currentCanvas._container)
-          break
-        case 'exactFit':
-          // Fit to the exact window size (cropping).
-          this._runner._experiment._scale_x = (this._runner._container.clientWidth / this._runner._experiment.vars.width)
+          const ar = (this._runner._container.clientHeight / this._runner._experiment.vars.height)
+          this._runner._renderer.resize(Math.round(this._runner._experiment.vars.width * ar), this._runner._container.clientHeight)
+          this._runner._experiment._scale_x = Math.round(this._runner._experiment.vars.width * ar) / this._runner._experiment.vars.width
           this._runner._experiment._scale_y = (this._runner._container.clientHeight / this._runner._experiment.vars.height)
+        } else {
+          const ar = (this._runner._container.clientWidth / this._runner._experiment.vars.width)
+          this._runner._renderer.resize(this._runner._container.clientWidth, Math.round(this._runner._experiment.vars.height * ar))
+          this._runner._experiment._scale_x = (this._runner._container.clientWidth / this._runner._experiment.vars.width)
+          this._runner._experiment._scale_y = Math.round(this._runner._experiment.vars.height * ar) / this._runner._experiment.vars.height
+        }
+        this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x
+        this._runner._experiment._currentCanvas._container.scale.y = this._runner._experiment._scale_y
+        this._runner._renderer.render(this._runner._experiment._currentCanvas._container)
+        break
+      case 'exactFit':
+        // Fit to the exact window size (cropping).
+        this._runner._experiment._scale_x = (this._runner._container.clientWidth / this._runner._experiment.vars.width)
+        this._runner._experiment._scale_y = (this._runner._container.clientHeight / this._runner._experiment.vars.height)
 
-          // Reize the current canvas.
-          this._runner._renderer.resize(this._runner._container.clientWidth, this._runner._container.clientHeight)
-          this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x
-          this._runner._experiment._currentCanvas._container.scale.y = this._runner._experiment._scale_y
-          this._runner._renderer.render(this._runner._experiment._currentCanvas._container)
-          break
+        // Reize the current canvas.
+        this._runner._renderer.resize(this._runner._container.clientWidth, this._runner._container.clientHeight)
+        this._runner._experiment._currentCanvas._container.scale.x = this._runner._experiment._scale_x
+        this._runner._experiment._currentCanvas._container.scale.y = this._runner._experiment._scale_y
+        this._runner._renderer.render(this._runner._experiment._currentCanvas._container)
+        break
       }
     } else {
       // Check for exiting experiment.
@@ -306,7 +306,7 @@ export default class Screen {
       // Clear the stage by temoving al the child elements.
       for (var i = this._introScreen.children.length - 1; i >= 0; i--) {
         this._introScreen.removeChild(this._introScreen.children[i])
-      };
+      }
       this._runner._renderer.render(this._introScreen)
     }
   }
@@ -326,31 +326,31 @@ export default class Screen {
     if (this._active === true) {
       // Select the stage.
       switch (percentage) {
-        case -1:
-          this._progressBarOuter = new Graphics()
-          this._progressBarOuter.lineStyle(1, 0xFFFFFF, 1)
-          this._progressBarOuter.drawRect(xOuter, yOuter, wOuter, hOuter)
-          this._progressBarOuter.x = 0
-          this._progressBarOuter.y = 0
-          this._progressBarInner = new Graphics()
-          this._progressBarInner.lineStyle(1, 0xFFFFFF, 1)
-          this._progressBarInner.drawRect(xOuter + 2, yOuter + 2, 1, hOuter - 4)
-          this._progressBarInner.x = 0
-          this._progressBarInner.y = 0
-          this._introScreen.addChild(this._progressBarInner)
-          this._introScreen.addChild(this._progressBarOuter)
-          this._runner._renderer.render(this._introScreen)
-          break
-        case 100:
-          this._introScreen.removeChild(this._progressBarInner)
-          this._introScreen.removeChild(this._progressBarOuter)
-          this._runner._renderer.render(this._introScreen)
-          break
-        default:
-          this._progressBarOuter.beginFill(0xFFFFFF)
-          this._progressBarOuter.drawRect(xOuter + 2, yOuter + 2, Math.round(percentage * (wOuter - 4)), hOuter - 4)
-          this._progressBarOuter.endFill()
-          this._runner._renderer.render(this._introScreen)
+      case -1:
+        this._progressBarOuter = new Graphics()
+        this._progressBarOuter.lineStyle(1, 0xFFFFFF, 1)
+        this._progressBarOuter.drawRect(xOuter, yOuter, wOuter, hOuter)
+        this._progressBarOuter.x = 0
+        this._progressBarOuter.y = 0
+        this._progressBarInner = new Graphics()
+        this._progressBarInner.lineStyle(1, 0xFFFFFF, 1)
+        this._progressBarInner.drawRect(xOuter + 2, yOuter + 2, 1, hOuter - 4)
+        this._progressBarInner.x = 0
+        this._progressBarInner.y = 0
+        this._introScreen.addChild(this._progressBarInner)
+        this._introScreen.addChild(this._progressBarOuter)
+        this._runner._renderer.render(this._introScreen)
+        break
+      case 100:
+        this._introScreen.removeChild(this._progressBarInner)
+        this._introScreen.removeChild(this._progressBarOuter)
+        this._runner._renderer.render(this._introScreen)
+        break
+      default:
+        this._progressBarOuter.beginFill(0xFFFFFF)
+        this._progressBarOuter.drawRect(xOuter + 2, yOuter + 2, Math.round(percentage * (wOuter - 4)), hOuter - 4)
+        this._progressBarOuter.endFill()
+        this._runner._renderer.render(this._introScreen)
       }
     }
   }

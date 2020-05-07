@@ -54,7 +54,7 @@ export default class Syntax {
             // Return the var. notation otherwise
             const content = match.substring(1, match.length - 1)
             return `var.${content}`
-          } else if ([`"`, `'`].includes(string[offset]) &&
+          } else if (['"', '\''].includes(string[offset]) &&
             string[offset] === string[offset + match.length - 1]) {
             // Check if match is between quotes. Don't do anything then
             return match
@@ -121,7 +121,7 @@ export default class Syntax {
     text = this.escapeBrackets(text)
     /** The replacer function detects variable entries in the passed text
     and replaces them with variable values as found in OpenSesame's var store */
-    let result = text.replace(/\[(\w+|=.+?)\]/g, (match, content, offset, string) => {
+    const result = text.replace(/\[(\w+|=.+?)\]/g, (match, content, offset, string) => {
       // Check if contents of [] start with an =. In this case they should be
       // evaluated as a Python statement
       content = this.unescapeBrackets(content)
@@ -160,7 +160,7 @@ export default class Syntax {
     })
     // Try to convert the result to a number again. If this succeeds return it.
     if (result !== '') {
-      let nr = toNumber(result)
+      const nr = toNumber(result)
       if (!isNaN(nr)) return nr
     }
     // Check if content has additional quotes
@@ -197,6 +197,7 @@ export default class Syntax {
    */
   add_slashes (str) {
     return str.replace(/\\/g, '\\\\')
+      // eslint-disable-next-line no-control-regex
       .replace(/\u0008/g, '\\b')
       .replace(/\t/g, '\\t')
       .replace(/\n/g, '\\n')
@@ -315,10 +316,10 @@ export default class Syntax {
    * @return {String} - The escaped text.
    */
   escapeBrackets (text) {
-    let result = text.replace(/\\+[[\]]/g, (match, content, offset, str) => {
-      let NBrackets = match.length - 1
+    const result = text.replace(/\\+[[\]]/g, (match, content, offset, str) => {
+      const NBrackets = match.length - 1
       if (NBrackets % 2 === 1) {
-        let chartype = match[match.length - 1] === '[' ? 'OPEN' : 'CLOSE'
+        const chartype = match[match.length - 1] === '[' ? 'OPEN' : 'CLOSE'
         return `%%${chartype}:${NBrackets}:%%`
       }
       return match
@@ -333,11 +334,11 @@ export default class Syntax {
    * @return {String} - The unescaped text.
    */
   unescapeBrackets (text) {
-    let result = text.replace(/%%(OPEN|CLOSE):\d+:%%/g, (match, content, offset, str) => {
-      let chartype = match.substr(2, 4) === 'OPEN' ? '[' : ']'
-      let i1 = match.indexOf(':') + 1
-      let i2 = match.lastIndexOf(':')
-      let nBrackets = parseInt(match.substr(i1, i2 - i1))
+    const result = text.replace(/%%(OPEN|CLOSE):\d+:%%/g, (match, content, offset, str) => {
+      const chartype = match.substr(2, 4) === 'OPEN' ? '[' : ']'
+      const i1 = match.indexOf(':') + 1
+      const i2 = match.lastIndexOf(':')
+      const nBrackets = parseInt(match.substr(i1, i2 - i1))
       return Array(nBrackets).join('\\') + chartype
     })
     return result

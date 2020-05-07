@@ -25,37 +25,37 @@ export default class Session {
     // Get the session information from the client system.
     this._date = new Date()
     this._session = {
-      'browser': {
-        'codename': navigator.appCodeName,
-        'name': navigator.appName,
-        'version': navigator.appVersion
+      browser: {
+        codename: navigator.appCodeName,
+        name: navigator.appName,
+        version: navigator.appVersion
       },
-      'date': {
-        'startdate': ('0' + this._date.getDate()).slice(-2) + '-' + ('0' + this._date.getMonth()).slice(-2) + '-' + ('0' + this._date.getFullYear()).slice(-2),
-        'starttime': ('0' + this._date.getHours()).slice(-2) + ':' + ('0' + this._date.getMinutes()).slice(-2) + ':' + ('0' + this._date.getSeconds()).slice(-2),
-        'startdateUTC': ('0' + this._date.getUTCDate()).slice(-2) + '-' + ('0' + this._date.getUTCMonth()).slice(-2) + '-' + ('0' + this._date.getUTCFullYear()).slice(-2)
+      date: {
+        startdate: ('0' + this._date.getDate()).slice(-2) + '-' + ('0' + this._date.getMonth()).slice(-2) + '-' + ('0' + this._date.getFullYear()).slice(-2),
+        starttime: ('0' + this._date.getHours()).slice(-2) + ':' + ('0' + this._date.getMinutes()).slice(-2) + ':' + ('0' + this._date.getSeconds()).slice(-2),
+        startdateUTC: ('0' + this._date.getUTCDate()).slice(-2) + '-' + ('0' + this._date.getUTCMonth()).slice(-2) + '-' + ('0' + this._date.getUTCFullYear()).slice(-2)
       },
-      'experiment': {
-        'debug': 0,
-        'parameters': 0,
-        'pilot': 0,
-        'taskname': 0,
-        'taskversion': 0
+      experiment: {
+        debug: 0,
+        parameters: 0,
+        pilot: 0,
+        taskname: 0,
+        taskversion: 0
       },
-      'screen': {
-        'availableHeight': screen.availHeight,
-        'availableWidth': screen.availWidth,
-        'colorDepth': screen.colorDepth,
-        'height': screen.height,
-        'outerheight': window.outerheight,
-        'outerwidth': window.outerwidth,
-        'pixelDepth': screen.pixelDepth,
-        'screenX': window.screenX,
-        'screenY': window.screenY,
-        'width': screen.width
+      screen: {
+        availableHeight: screen.availHeight,
+        availableWidth: screen.availWidth,
+        colorDepth: screen.colorDepth,
+        height: screen.height,
+        outerheight: window.outerheight,
+        outerwidth: window.outerwidth,
+        pixelDepth: screen.pixelDepth,
+        screenX: window.screenX,
+        screenY: window.screenY,
+        width: screen.width
       },
-      'system': {
-        'os': navigator.platform
+      system: {
+        os: navigator.platform
       }
     }
   }

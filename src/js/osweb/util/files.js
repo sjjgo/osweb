@@ -14,12 +14,15 @@ class FileStreamer {
     this.chunkSize = chunkSize // bytes
     this.rewind()
   }
+
   rewind () {
     this.offset = 0
   }
+
   isEndOfFile () {
     return this.offset >= this.getFileSize()
   }
+
   readBlock () {
     const fileReader = new FileReader()
     const blob = this.file.slice(this.offset, this.offset + this.chunkSize)
@@ -42,6 +45,7 @@ class FileStreamer {
       fileReader.readAsArrayBuffer(blob)
     })
   }
+
   getFileSize () {
     return this.file.size
   }

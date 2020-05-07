@@ -97,7 +97,7 @@ export default class ResponseStore {
    */
   add (response, correct, responseTime, item, feedback) {
     // Create a response_info object.
-    var responnse = new ResponseInfo(this, response, correct, responseTime, item, feedback)
+    // response = new ResponseInfo(this, response, correct, responseTime, item, feedback)
 
     // Add the response info to the beginning of the list.
     this._responses.unshift(response)

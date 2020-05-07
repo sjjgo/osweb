@@ -202,96 +202,96 @@ export default class Canvas {
 
     // Process the node content itself.
     switch (htmlNode.nodeType) {
-      case 1:
-        // Select the proper html tag
-        switch (htmlNode.nodeName) {
-          case 'B':
-            // Process bold tag.
-            elementStyle.font_bold = true
-            break
-          case 'BR':
-            // Process break tag, get the total width of the line.
-            textBlock.row.height = (textBlock.row.height > 0) ? textBlock.row.height : textBlock.prev_height
-            textBlock.row.width = (textBlock.x_pos > textBlock.row.width) ? textBlock.x_pos : textBlock.row.width
-            textBlock.width = (textBlock.width > textBlock.row.width) ? textBlock.width : textBlock.row.width
-            textBlock.y_pos = textBlock.y_pos + textBlock.row.height
-            textBlock.x_pos = 4
-            textBlock.height = textBlock.height + textBlock.row.height
-            // new row with elements.
-            textBlock.rows.push(textBlock.row)
-            textBlock.row = {
-              ascent: 0,
-              width: 0,
-              height: 0,
-              text_elements: [],
-              text_dimensions: [],
-              text_underline: []
-            }
-            break
-          case 'I':
-            // Process italic tag.
-            elementStyle.font_italic = true
-            break
-          case 'SPAN':
-            // Get the style tokens.
-            if (htmlNode.attributes.length > 0) {
-              var tokens = htmlNode.attributes[0].value.split(';')
-              // parse through the style tokens.
-              for (var j = 0; j < tokens.length; j++) {
-                var property = tokens[j].slice(0, tokens[j].indexOf(':'))
-                var value = tokens[j].slice(tokens[j].indexOf(':') + 1, tokens[j].length)
-                // Set the supported properties.
-                switch (property) {
-                  case 'color':
-                    elementStyle.color = value
-                    break
-                  case 'font-size':
-                    elementStyle.font_size = value
-                    break
-                  case 'font-family':
-                    elementStyle.font_family = value
-                    break
-                }
-              }
-            }
-            break
-          case 'U':
-            // Process underline tag.
-            elementStyle.font_underline = true
-            break
-        }
+    case 1:
+      // Select the proper html tag
+      switch (htmlNode.nodeName) {
+      case 'B':
+        // Process bold tag.
+        elementStyle.font_bold = true
         break
-      case 3:
-        // Create the text style element.
-        var textStyle = {
-          fontFamily: elementStyle.font_family,
-          fontStyle: (elementStyle.font_italic === true) ? 'italic' : 'normal',
-          fontWeight: (elementStyle.font_bold === true) ? 'bold' : 'normal',
-          fontSize: elementStyle.font_size,
-          fill: elementStyle.color
-        }
-
-        // Create the text element and get the dimension.
-        var bounds = {}
-        var textElement = new Text(htmlNode.textContent, textStyle)
-        textElement.getBounds(false, bounds)
-
-        // Get the height and descent (for vertical positioning);
-        var dimension = this._getTextBaseline(htmlNode.textContent, elementStyle.font_family, elementStyle.font_size, elementStyle.font_bold)
-
-        // Position the text element and update the width.
-        textElement.x = textBlock.x_pos
-        textElement.y = textBlock.y_pos
-        textBlock.x_pos = textBlock.x_pos + bounds.width
+      case 'BR':
+        // Process break tag, get the total width of the line.
+        textBlock.row.height = (textBlock.row.height > 0) ? textBlock.row.height : textBlock.prev_height
         textBlock.row.width = (textBlock.x_pos > textBlock.row.width) ? textBlock.x_pos : textBlock.row.width
         textBlock.width = (textBlock.width > textBlock.row.width) ? textBlock.width : textBlock.row.width
-        textBlock.row.height = ((bounds.height + 1) > textBlock.row.height) ? bounds.height + 1 : textBlock.row.height
-        textBlock.row.ascent = (dimension.ascent > textBlock.row.ascent) ? dimension.ascent : textBlock.row.ascent
-        textBlock.prev_height = textBlock.row.height
-        textBlock.row.text_elements.push(textElement)
-        textBlock.row.text_dimensions.push(dimension)
-        textBlock.row.text_underline.push(elementStyle.font_underline)
+        textBlock.y_pos = textBlock.y_pos + textBlock.row.height
+        textBlock.x_pos = 4
+        textBlock.height = textBlock.height + textBlock.row.height
+        // new row with elements.
+        textBlock.rows.push(textBlock.row)
+        textBlock.row = {
+          ascent: 0,
+          width: 0,
+          height: 0,
+          text_elements: [],
+          text_dimensions: [],
+          text_underline: []
+        }
         break
+      case 'I':
+        // Process italic tag.
+        elementStyle.font_italic = true
+        break
+      case 'SPAN':
+        // Get the style tokens.
+        if (htmlNode.attributes.length > 0) {
+          var tokens = htmlNode.attributes[0].value.split(';')
+          // parse through the style tokens.
+          for (var j = 0; j < tokens.length; j++) {
+            var property = tokens[j].slice(0, tokens[j].indexOf(':'))
+            var value = tokens[j].slice(tokens[j].indexOf(':') + 1, tokens[j].length)
+            // Set the supported properties.
+            switch (property) {
+            case 'color':
+              elementStyle.color = value
+              break
+            case 'font-size':
+              elementStyle.font_size = value
+              break
+            case 'font-family':
+              elementStyle.font_family = value
+              break
+            }
+          }
+        }
+        break
+      case 'U':
+        // Process underline tag.
+        elementStyle.font_underline = true
+        break
+      }
+      break
+    case 3:
+      // Create the text style element.
+      var textStyle = {
+        fontFamily: elementStyle.font_family,
+        fontStyle: (elementStyle.font_italic === true) ? 'italic' : 'normal',
+        fontWeight: (elementStyle.font_bold === true) ? 'bold' : 'normal',
+        fontSize: elementStyle.font_size,
+        fill: elementStyle.color
+      }
+
+      // Create the text element and get the dimension.
+      var bounds = {}
+      var textElement = new Text(htmlNode.textContent, textStyle)
+      textElement.getBounds(false, bounds)
+
+      // Get the height and descent (for vertical positioning);
+      var dimension = this._getTextBaseline(htmlNode.textContent, elementStyle.font_family, elementStyle.font_size, elementStyle.font_bold)
+
+      // Position the text element and update the width.
+      textElement.x = textBlock.x_pos
+      textElement.y = textBlock.y_pos
+      textBlock.x_pos = textBlock.x_pos + bounds.width
+      textBlock.row.width = (textBlock.x_pos > textBlock.row.width) ? textBlock.x_pos : textBlock.row.width
+      textBlock.width = (textBlock.width > textBlock.row.width) ? textBlock.width : textBlock.row.width
+      textBlock.row.height = ((bounds.height + 1) > textBlock.row.height) ? bounds.height + 1 : textBlock.row.height
+      textBlock.row.ascent = (dimension.ascent > textBlock.row.ascent) ? dimension.ascent : textBlock.row.ascent
+      textBlock.prev_height = textBlock.row.height
+      textBlock.row.text_elements.push(textElement)
+      textBlock.row.text_dimensions.push(dimension)
+      textBlock.row.text_underline.push(elementStyle.font_underline)
+      break
     }
 
     // Process the child nodes recursive (if any).
@@ -606,20 +606,20 @@ export default class Canvas {
    */
   image (fname, center, x, y, scale) {
     // Get image from file pool.
-    let name = this.experiment._runner._syntax.remove_quotes(fname)
-    let path = this.experiment._runner._pool[name]
+    const name = this.experiment._runner._syntax.remove_quotes(fname)
+    const path = this.experiment._runner._pool[name]
     if (typeof (path) === 'undefined') {
       this.experiment._runner._debugger.addError(`"${fname}" does not exist`)
     }
-    let img = path.data
+    const img = path.data
     // Create a temporary canvas to make an image data array.
-    let canvas = document.createElement('canvas')
+    const canvas = document.createElement('canvas')
     canvas.width = img.width
     canvas.height = img.height
-    let ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d')
     ctx.drawImage(img, 0, 0)
 
-    let sprite = new Sprite(Texture.from(canvas))
+    const sprite = new Sprite(Texture.from(canvas))
 
     // Scale the image.
     sprite.scale.x = scale

@@ -43,25 +43,25 @@ export default class InlineJavaScript extends Item {
         var tokens = this.syntax.split(lines[i])
         if ((tokens !== null) && (tokens.length > 0)) {
           switch (tokens[0]) {
-            case 'set':
-              this.parse_variable(lines[i])
-              break
-            case '__end__':
-              read_run_lines = false
-              read_prepare_lines = false
-              break
-            case '___prepare__':
-              read_prepare_lines = true
-              break
-            case '___run__':
-              read_run_lines = true
-              break
-            default:
-              if (read_run_lines === true) {
-                this.vars._run = this.vars._run + lines[i] + '\n'
-              } else if (read_prepare_lines === true) {
-                this.vars._prepare = this.vars._prepare + lines[i] + '\n'
-              }
+          case 'set':
+            this.parse_variable(lines[i])
+            break
+          case '__end__':
+            read_run_lines = false
+            read_prepare_lines = false
+            break
+          case '___prepare__':
+            read_prepare_lines = true
+            break
+          case '___run__':
+            read_run_lines = true
+            break
+          default:
+            if (read_run_lines === true) {
+              this.vars._run = this.vars._run + lines[i] + '\n'
+            } else if (read_prepare_lines === true) {
+              this.vars._prepare = this.vars._prepare + lines[i] + '\n'
+            }
           }
         } else {
           if (read_run_lines === true) {

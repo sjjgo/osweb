@@ -27,12 +27,12 @@ export default class AdvancedDelay extends Item {
    * @param {Number} std - The standard deviation value.
    * @return {Number} - result value
    */
-  _random_gauss(mean, std) {
+  _random_gauss (mean, std) {
     let u = 0
     let v = 0
-     while(u === 0) u = Math.random()
-     while(v === 0) v = Math.random()
-     return Math.max(0, mean + Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI*v) * std)
+    while (u === 0) u = Math.random()
+    while (v === 0) v = Math.random()
+    return Math.max(0, mean + Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * std)
   }
 
   /**
@@ -54,9 +54,9 @@ export default class AdvancedDelay extends Item {
 
   /** Implements the prepare phase of an item. */
   prepare () {
-    let duration = this.vars.get('duration')
-    let jitter = this.vars.get('jitter')
-    let jitter_mode = this.vars.get('jitter_mode')
+    const duration = this.vars.get('duration')
+    const jitter = this.vars.get('jitter')
+    const jitter_mode = this.vars.get('jitter_mode')
     if ((!isNumber(duration)) || (duration < 0)) {
       this._runner._debugger.addError('Duration should be a positive numeric value in advanced_delay ' + this.name)
     }

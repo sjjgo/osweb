@@ -25,11 +25,11 @@ export default class Widget {
   draw_frame (rect, style) {
     // Create the background line elements.
     var line = new Graphics()
-    line.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme['gray'].lineColorLeftTop), 1)
+    line.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme.gray.lineColorLeftTop), 1)
     line.moveTo(this._container._width, 0)
     line.lineTo(0, 0)
     line.lineTo(0, this._container._height)
-    line.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme['gray'].lineColorRightBottom), 1)
+    line.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme.gray.lineColorRightBottom), 1)
     line.lineTo(this._container._width, this._container._height)
     line.lineTo(this._container._width, 0)
     line.x = 0
@@ -37,8 +37,8 @@ export default class Widget {
 
     // Create the background color element.
     var rectangle = new Graphics()
-    rectangle.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme['gray'].backgroundColor), 1)
-    rectangle.beginFill(this.form._canvas._styles._convertColorValue(this.form._themes.theme['gray'].backgroundColor))
+    rectangle.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme.gray.backgroundColor), 1)
+    rectangle.beginFill(this.form._canvas._styles._convertColorValue(this.form._themes.theme.gray.backgroundColor))
     rectangle.drawRect(1, 1, this._container._width - 2, this._container._height - 2)
     rectangle.endFill()
     rectangle.x = 0

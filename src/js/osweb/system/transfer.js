@@ -209,7 +209,7 @@ export default class Transfer {
           ado.src = currentFile.getBlobUrl()
           item.data = ado
           item.type = 'video'
-        };
+        }
         // Increment the counter.
         this.currentIndex++
 
@@ -277,7 +277,7 @@ export default class Transfer {
 
       // Create the request.
       var xhr = new XMLHttpRequest()
-      xhr.open('post', target + '?file=subject-' + this._runner._experiment.vars['subject_nr'], true)
+      xhr.open('post', target + '?file=subject-' + this._runner._experiment.vars.subject_nr, true)
 
       // Send the actual data.
       return xhr.send(data)

@@ -4,7 +4,7 @@ export default class Themes {
   constructor () {
     // Definition of public properties.
     this.theme = []
-    this.theme['gray'] = {
+    this.theme.gray = {
       backgroundColor: '#888a85',
       box_size: 16,
       lineColorLeftTop: '#babdb6',

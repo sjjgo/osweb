@@ -76,7 +76,7 @@ describe('Syntax', function () {
     it('should parse command with arguments and keyword arguments', function () {
       checkCmd('widget 0 0 1 1 label text="Tést 123"',
         'widget', [0, 0, 1, 1, 'label'], {
-          'text': 'Tést 123'
+          text: 'Tést 123'
         })
     })
     it('should parse a single command with no arguments', function () {
@@ -85,7 +85,7 @@ describe('Syntax', function () {
     it('should parse command with escaped backslashes', function () {
       checkCmd('set test "c:\\\\" x="d:\\\\"',
         'set', ['test', 'c:\\'], {
-          'x': 'd:\\'
+          x: 'd:\\'
         })
     })
     it('should ignore/not parse contents quoted keyword argument values', function () {
@@ -107,7 +107,7 @@ describe('Syntax', function () {
     })
     it('should be able to handle escaped backslashes in keyword arguments', function () {
       checkCmd('test test="\\"quoted\\""', 'test', [], {
-        'test': '"quoted"'
+        test: '"quoted"'
       })
     })
     it('should be able to parse numbers in scientific notation', function () {
@@ -118,7 +118,7 @@ describe('Syntax', function () {
       expect(function () {
         checkCmd('widget 0 0 1 1 label text="Tést 123',
           'widget', [0, 0, 1, 1, 'label'], {
-            'text': 'Tést 123'
+            text: 'Tést 123'
           })
       }).toThrow()
     })

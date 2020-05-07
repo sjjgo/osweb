@@ -198,7 +198,7 @@ export default class ItemStore {
     // Create a unique name.
     var i = 1
     var uniqueName = name
-    while (this._items.hasOwnProperty(uniqueName) === true) {
+    while (Object.prototype.hasOwnProperty.call(this._items, uniqueName) === true) {
       uniqueName = name + '_' + String(i)
       i++
     }

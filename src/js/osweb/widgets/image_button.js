@@ -18,7 +18,7 @@ export default class ImageButtonWidget extends ImageWidget {
 
     // Set the class public properties.
     this.type = 'image_button'
-    this.var = (typeof properties['var'] !== 'undefined') ? properties['var'] : null
+    this.var = (typeof properties.var !== 'undefined') ? properties.var : null
 
     // Set the current status of the checkbox.
     this.set_var(false, this.var)

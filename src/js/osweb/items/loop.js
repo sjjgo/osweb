@@ -73,7 +73,7 @@ export default class Loop extends Item {
         return this._eval_args(el)
       } else {
         return this._runner._syntax.eval_text(el)
-       }
+      }
     })
   }
 
@@ -111,68 +111,68 @@ export default class Loop extends Item {
           const [instruction, ...params] = this.syntax.split(lines[i])
 
           switch (instruction) {
-            case 'run':
-              if (params.length > 0) this.vars.item = params[0]
+          case 'run':
+            if (params.length > 0) this.vars.item = params[0]
+            break
+          case 'setcycle':
+            if (params.length <= 2) {
+              this._runner._debugger.addError(`Incorrect setcycle command in item ${this.name}`)
               break
-            case 'setcycle':
-              if (params.length <= 2) {
-                this._runner._debugger.addError(`Incorrect setcycle command in item ${this.name}`)
-                break
+            }
+            const cycle = params[0]
+            const name = params[1]
+            let value = this.syntax.remove_quotes(params[2])
+            // Check if the value is numeric
+            value = isNumber(value) ? Number(value) : value
+            // If a python expression, convert to javascript.
+            if (value[0] === '=') {
+              // Parse the python statement.
+              value = this._runner._pythonParser._prepare(value.slice(1))
+              if (value !== null) {
+                value = value.body[0]
               }
-              const cycle = params[0]
-              const name = params[1]
-              let value = this.syntax.remove_quotes(params[2])
-              // Check if the value is numeric
-              value = isNumber(value) ? Number(value) : value
-              // If a python expression, convert to javascript.
-              if (value[0] === '=') {
-                // Parse the python statement.
-                value = this._runner._pythonParser._prepare(value.slice(1))
-                if (value !== null) {
-                  value = value.body[0]
-                }
-              }
-              if (this.matrix[cycle] === undefined) {
-                this.matrix[cycle] = {}
-              }
-              this.matrix[cycle][name] = value
-              break
-            case 'fullfactorial':
-              this._operations.push([fullfactorial, []])
-              // this.matrix = fullfactorial(this.matrix)
-              break
-            case 'shuffle':
-              this._operations.push([shuffleVert, [params]])
-              // this.matrix = shuffleVert(this.matrix, params)
-              break
-            case 'shuffle_horiz':
-              this._operations.push([shuffleHoriz, [params]])
-              // this.matrix = shuffleHoriz(this.matrix, params)
-              break
-            case 'slice':
-              this._operations.push([(matrix, args) => matrix.slice(...args), [params]])
-              // this.matrix = this.matrix.slice(...params)
-              break
-            case 'sort':
-              this._operations.push([sortCol, [...params]])
-              // this.matrix = sortCol(this.matrix, ...params)
-              break
-            case 'sortby':
-              this._operations.push([sortBy, [params]])
-              // this.matrix = sortBy(this.matrix, params)
-              break
-            case 'reverse':
-              this._operations.push([reverseRows, [params]])
-              // this.matrix = reverseRows(this.matrix, params)
-              break
-            case 'roll':
-              this._operations.push([roll, [...params]])
-              // this.matrix = roll(this.matrix, ...params)
-              break
-            case 'weight':
-              this._operations.push([weight, [...params]])
-              // this.matrix = weight(this.matrix, ...params)
-              break
+            }
+            if (this.matrix[cycle] === undefined) {
+              this.matrix[cycle] = {}
+            }
+            this.matrix[cycle][name] = value
+            break
+          case 'fullfactorial':
+            this._operations.push([fullfactorial, []])
+            // this.matrix = fullfactorial(this.matrix)
+            break
+          case 'shuffle':
+            this._operations.push([shuffleVert, [params]])
+            // this.matrix = shuffleVert(this.matrix, params)
+            break
+          case 'shuffle_horiz':
+            this._operations.push([shuffleHoriz, [params]])
+            // this.matrix = shuffleHoriz(this.matrix, params)
+            break
+          case 'slice':
+            this._operations.push([(matrix, args) => matrix.slice(...args), [params]])
+            // this.matrix = this.matrix.slice(...params)
+            break
+          case 'sort':
+            this._operations.push([sortCol, [...params]])
+            // this.matrix = sortCol(this.matrix, ...params)
+            break
+          case 'sortby':
+            this._operations.push([sortBy, [params]])
+            // this.matrix = sortBy(this.matrix, params)
+            break
+          case 'reverse':
+            this._operations.push([reverseRows, [params]])
+            // this.matrix = reverseRows(this.matrix, params)
+            break
+          case 'roll':
+            this._operations.push([roll, [...params]])
+            // this.matrix = roll(this.matrix, ...params)
+            break
+          case 'weight':
+            this._operations.push([weight, [...params]])
+            // this.matrix = weight(this.matrix, ...params)
+            break
           }
         }
       }

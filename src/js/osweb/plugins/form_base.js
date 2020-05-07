@@ -77,7 +77,7 @@ export default class FormBase extends Item {
     var list = this.syntax.split(line)
 
     if ((this._form_text === true) && (list[0] !== '__end__')) {
-      this.vars['form_text'] = this.vars['form_text'] + line.replace('\t', '') + ' <br/> '
+      this.vars.form_text = this.vars.form_text + line.replace('\t', '') + ' <br/> '
     }
     if ((this._form_options === true) && (list[0] !== '__end__')) {
       this.options.push(line.replace('\t', ''))
@@ -93,7 +93,7 @@ export default class FormBase extends Item {
     } else if (list[0] === '__options__') {
       this._form_options = true
     } else if (list[0] === '__form_text__') {
-      this.vars['form_text'] = ''
+      this.vars.form_text = ''
       this._form_text = true
     } else if (list[0] === '__end__') {
       this._form_options = false
@@ -139,8 +139,8 @@ export default class FormBase extends Item {
 
       // Process focus keyword.
       var focus = false
-      if ((typeof kwdict['focus'] !== 'undefined') && (kwdict['focus'] === 'yes')) {
-        delete (kwdict['focus'])
+      if ((typeof kwdict.focus !== 'undefined') && (kwdict.focus === 'yes')) {
+        delete (kwdict.focus)
         focus = true
       }
 

@@ -38,8 +38,11 @@ export default class JavaScriptWorkspace {
      * @param {String} js - JavaScript code to execute
      */
   _eval (js) {
-    let vars = this.vars_proxy
-    let Canvas = () => new CanvasClass(this.experiment)
+    // eslint-disable-next-line no-unused-vars
+    const vars = this.vars_proxy
+    // eslint-disable-next-line no-unused-vars
+    const Canvas = () => new CanvasClass(this.experiment)
+    // eslint-disable-next-line no-eval
     eval(js)
   }
 }

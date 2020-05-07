@@ -152,8 +152,8 @@ export default class Events {
   _keyDown (event) {
     // Store the keyboard event.
     this._keyDownEvent = {
-      'event': event,
-      'rtTime': this._runner._experiment.clock.time()
+      event: event,
+      rtTime: this._runner._experiment.clock.time()
     }
 
     // Check for esc key to pause the experiment.
@@ -193,10 +193,10 @@ export default class Events {
   _processKeyboardEvent (event, keyboardState) {
     // Create a new keyboard response object.
     const keyboardResponse = {
-      'event': event,
-      'rtTime': this._runner._experiment.clock.time(),
-      'state': keyboardState,
-      'type': constants.RESPONSE_KEYBOARD
+      event: event,
+      rtTime: this._runner._experiment.clock.time(),
+      state: keyboardState,
+      type: constants.RESPONSE_KEYBOARD
     }
 
     // Convert response to proper keyboard token.
@@ -231,8 +231,8 @@ export default class Events {
   _mouseMove (event) {
     // Store the mouse move event and its timestamp for use in the mouse class.
     this._mouseMoveEvent = {
-      'event': event,
-      'rtTime': this._runner._experiment.clock.time()
+      event: event,
+      rtTime: this._runner._experiment.clock.time()
     }
   }
 
@@ -255,8 +255,8 @@ export default class Events {
   _mouseDown (event) {
     // Store the mouse down event and its timestamp for use in the mouse class.
     this._mouseDownEvent = {
-      'event': event,
-      'rtTime': this._runner._experiment.clock.time()
+      event: event,
+      rtTime: this._runner._experiment.clock.time()
     }
 
     // Only select this event when the collection mode is set for this.
@@ -286,10 +286,10 @@ export default class Events {
   _processMouseEvent (event, mouseState) {
     // Create a mouse response object.
     var mouseResponse = {
-      'event': event,
-      'rtTime': this._runner._experiment.clock.time(),
-      'state': mouseState,
-      'type': constants.RESPONSE_MOUSE
+      event: event,
+      rtTime: this._runner._experiment.clock.time(),
+      state: mouseState,
+      type: constants.RESPONSE_MOUSE
     }
 
     // Adjust mouse response.
@@ -343,41 +343,41 @@ export default class Events {
   _time (event) {
     // Select the proper state.
     switch (this._state) {
-      case constants.TIMER_NONE:
-        // Do nothing in the loop
-        break
-      case constants.TIMER_WAIT:
-        // Set current time stamp
-        this._timeStamp = this._currentItem.clock.time()
+    case constants.TIMER_NONE:
+      // Do nothing in the loop
+      break
+    case constants.TIMER_WAIT:
+      // Set current time stamp
+      this._timeStamp = this._currentItem.clock.time()
 
-        // Check if a time out occures or a valid response is given.
-        if (((this._timeOut === -1) && ((this._responseGiven === true) || (this._videoHasEnded === true))) ||
+      // Check if a time out occures or a valid response is given.
+      if (((this._timeOut === -1) && ((this._responseGiven === true) || (this._videoHasEnded === true))) ||
                     ((this._timeOut > 0) && ((this._responseType === constants.RESPONSE_KEYBOARD) || (this._responseType === constants.RESPONSE_MOUSE)) && (this._responseGiven === true)) ||
                     ((this._timeOut > 0) && ((this._timeStamp - this._currentItem.experiment.vars.get('time_' + this._currentItem.name)) > this._timeOut))) {
-          this.proceed()
-        } else {
-          // Update the current item without response.
-          this._currentItem._update(null)
-        }
-        break
-      case constants.TIMER_PAUSE:
-        // Do nothing in the loop
-        break
-      case constants.TIMER_RESUME:
-        // Do nothing in the loop
-        break
-      case constants.TIMER_BREAK:
-      case constants.TIMER_EXIT:
-        // Adjus the status.
-        this._state = constants.TIMER_NONE
-
-        // Exit the runner.
-        this._runner._finalize()
-        break
-      case constants.TIMER_FORM:
+        this.proceed()
+      } else {
         // Update the current item without response.
         this._currentItem._update(null)
-        break
+      }
+      break
+    case constants.TIMER_PAUSE:
+      // Do nothing in the loop
+      break
+    case constants.TIMER_RESUME:
+      // Do nothing in the loop
+      break
+    case constants.TIMER_BREAK:
+    case constants.TIMER_EXIT:
+      // Adjus the status.
+      this._state = constants.TIMER_NONE
+
+      // Exit the runner.
+      this._runner._finalize()
+      break
+    case constants.TIMER_FORM:
+      // Update the current item without response.
+      this._currentItem._update(null)
+      break
     }
   }
 

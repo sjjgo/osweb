@@ -33,6 +33,7 @@ export default class PythonWorkspace {
       } else if (evalString === 'never') {
         return false
       } else {
+        // eslint-disable-next-line no-eval
         return eval(evalString)
       }
     } else {

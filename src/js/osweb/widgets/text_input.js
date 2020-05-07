@@ -20,13 +20,13 @@ export default class TextInputWidget extends Widget {
     super(form)
 
     // Set the class public properties.
-    this.center = (typeof properties['center'] !== 'undefined') ? (properties['center'] === 'yes') : false
+    this.center = (typeof properties.center !== 'undefined') ? (properties.center === 'yes') : false
     this.focus = false
-    this.frame = (typeof properties['frame'] !== 'undefined') ? (properties['frame'] === 'yes') : true
-    this.stub = (typeof properties['stub'] !== 'undefined') ? properties['stub'] : 'Type here...'
-    this.text = (typeof properties['text'] !== 'undefined') ? properties['text'] : ''
-    this.var = (typeof properties['var'] !== 'undefined') ? properties['var'] : null
-    this.return_accepts = (typeof properties['return_accepts'] !== 'undefined') ? (properties['return_accepts'] === 'yes') : false
+    this.frame = (typeof properties.frame !== 'undefined') ? (properties.frame === 'yes') : true
+    this.stub = (typeof properties.stub !== 'undefined') ? properties.stub : 'Type here...'
+    this.text = (typeof properties.text !== 'undefined') ? properties.text : ''
+    this.var = (typeof properties.var !== 'undefined') ? properties.var : null
+    this.return_accepts = (typeof properties.return_accepts !== 'undefined') ? (properties.return_accepts === 'yes') : false
     this.type = 'text_input'
   }
 

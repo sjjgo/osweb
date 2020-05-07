@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-extend-native */
 /*
  * OsWeb
@@ -23,7 +24,7 @@ export const VERSION_NUMBER = OSWEB_VERSION_NO
 String.prototype.replaceAll = function (str1, str2, ignore) {
   return this.replace(
     new RegExp(
-      str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, '\\$&'),
+      str1.replace(/([/,!\\^${}[]\(\)\.\*\+\?\|<>-&])/g, '\\$&'),
       (ignore ? 'gi' : 'g')),
     (typeof (str2) === 'string') ? str2.replace(/\$/g, '$$$$') : str2)
 }

@@ -16,13 +16,13 @@ export default class LabelWidget extends Widget {
     super(form)
 
     // Set the class public properties.
-    this.center = (typeof properties['center'] !== 'undefined')
-      ? (properties['center'] === 'yes')
+    this.center = (typeof properties.center !== 'undefined')
+      ? (properties.center === 'yes')
       : true
-    this.frame = (typeof properties['frame'] !== 'undefined')
-      ? (properties['frame'] === 'yes')
+    this.frame = (typeof properties.frame !== 'undefined')
+      ? (properties.frame === 'yes')
       : false
-    this.text = properties['text']
+    this.text = properties.text
     this.type = 'label'
   }
 

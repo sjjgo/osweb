@@ -24,7 +24,7 @@ export default class Coroutines extends Item {
 
   from_string (script) {
     if (script === null) return
-    for (let s of script.split('\n')) {
+    for (const s of script.split('\n')) {
       const [cmd, arglist, kwdict] = this.experiment.syntax.parse_cmd(s)
       if (cmd === 'set') {
         const [variable, value] = arglist
@@ -52,7 +52,7 @@ export default class Coroutines extends Item {
         this._runner._debugger.addError(msg)
         throw new Error(msg)
       }
-      this._runner._pythonWorkspace['self'] = this
+      this._runner._pythonWorkspace.self = this
       if (this._runner._pythonWorkspace._eval(taskParams.run_if) === true) {
         const start_time = this._runner._syntax.eval_text(taskParams.start_time, this.vars)
         const end_time = this._runner._syntax.eval_text(taskParams.end_time, this.vars)
@@ -68,12 +68,12 @@ export default class Coroutines extends Item {
     this._runner._debugger.addMessage(`Running coroutines item '${this.name}'`)
     super.run()
     // Prepare all tasks
-    for (let task of this.schedule) {
+    for (const task of this.schedule) {
       this._runner._itemStore.prepare(task.item_name, this)
     }
     this.schedule = sortBy(this.schedule, 'start_time')
     // Launch all tasks and wrap them in the coroutine helper
-    for (let task of this.schedule) {
+    for (const task of this.schedule) {
       this._runner._debugger.addMessage(`Launching task '${task.item_name}'`)
       task.launch()
     }
@@ -91,9 +91,9 @@ export default class Coroutines extends Item {
       this.active.push(this.schedule.shift())
     }
     this.active = sortBy(this.active, 'end_time')
-    let _active = []
-    for (let task of this.active) {
-      let status = task.step()
+    const _active = []
+    for (const task of this.active) {
+      const status = task.step()
       if (status === task.RUNNING) {
         _active.push(task)
         continue
@@ -114,7 +114,7 @@ export default class Coroutines extends Item {
       setTimeout(this._loop.bind(this), 0) // The well-known trick to deal with JS async nature...
     } else {
       // Kill all remaining tasks
-      for (let task of this.active) {
+      for (const task of this.active) {
         this._runner._debugger.addMessage(`Killing task '${task.item_name}'`)
         task.kill()
       }
@@ -180,7 +180,7 @@ class Task {
   }
 
   kill () {
-    let response = this._coroutine.next(false)
+    const response = this._coroutine.next(false)
     if (response.done === true) {
       this.state = this.FINISHED
       return true
