@@ -132,7 +132,7 @@ export default class Syntax {
       } else {
         let value
         try {
-          if ((vars === null) || (typeof vars[content] === 'undefined')) {
+          if ((typeof vars === 'undefined') || (vars === null) || (typeof vars[content] === 'undefined')) {
             value = this._runner._experiment.vars[content]
           } else {
             value = vars[content]

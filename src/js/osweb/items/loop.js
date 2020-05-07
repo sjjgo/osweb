@@ -1,10 +1,10 @@
 import {
   isNumber,
+  isArray,
   shuffle,
   sortBy
 } from 'lodash'
 
-import Keyboard from '../backends/keyboard.js'
 import {
   constants
 } from '../system/constants.js'
@@ -38,12 +38,15 @@ export default class Loop extends Item {
     // Definition of public properties.
     this.description = 'Repeatedly runs another item'
     this.matrix = null
+    this._cycles = []
 
     // Definition of private properties.
     this._break_if = ''
     this._cycles = []
-    this._index = -1
+    this._index = 0
     this._keyboard = null
+    this._operations = []
+    this._initialized = false
 
     // Process the script.
     this.from_string(script)
@@ -53,6 +56,25 @@ export default class Loop extends Item {
   _complete () {
     this._status = constants.STATUS_FINALIZE
     super._complete()
+  }
+
+  /**
+   * Scans the provided list of argument for variables and retrieves them if found.
+   * The function works recursively and thus also parses elements inside arrays that are part of
+   * args.
+   *
+   * @param {array} args The list of arguments to parse.
+   * @returns {array} The parsed arguments list
+   */
+  _eval_args (args) {
+    if (!isArray(args)) return args
+    return args.map( el => {
+      if (isArray(el)) {
+        return this._eval_args(el)
+      } else {
+        return this._runner._syntax.eval_text(el)
+       }
+    })
   }
 
   /** Reset all item variables to their default value. */
@@ -65,6 +87,10 @@ export default class Loop extends Item {
     this.vars.order = 'random'
     this.vars.item = ''
     this.vars.break_if = 'never'
+    this._cycles = []
+    this._index = 0
+    this._operations = []
+    this._initialized = false
   }
 
   /**
@@ -101,7 +127,7 @@ export default class Loop extends Item {
               // If a python expression, convert to javascript.
               if (value[0] === '=') {
                 // Parse the python statement.
-                value = this.experiment._runner._pythonParser._prepare(value.slice(1))
+                value = this._runner._pythonParser._prepare(value.slice(1))
                 if (value !== null) {
                   value = value.body[0]
                 }
@@ -112,41 +138,46 @@ export default class Loop extends Item {
               this.matrix[cycle][name] = value
               break
             case 'fullfactorial':
-              this.matrix = fullfactorial(this.matrix)
-              // Set the number of cycles to the length of the generated matrix
-              this.vars.cycles = this.matrix.length
+              this._operations.push([fullfactorial, []])
+              // this.matrix = fullfactorial(this.matrix)
               break
             case 'shuffle':
-              this.matrix = shuffleVert(this.matrix, params)
+              this._operations.push([shuffleVert, [params]])
+              // this.matrix = shuffleVert(this.matrix, params)
               break
             case 'shuffle_horiz':
-              this.matrix = shuffleHoriz(this.matrix, params)
+              this._operations.push([shuffleHoriz, [params]])
+              // this.matrix = shuffleHoriz(this.matrix, params)
               break
             case 'slice':
-              this.matrix = this.matrix.slice(...params)
-              // Set the number of cycles to the length of the generated matrix
-              this.vars.cycles = this.matrix.length
+              this._operations.push([(matrix, args) => matrix.slice(...args), [params]])
+              // this.matrix = this.matrix.slice(...params)
               break
             case 'sort':
-              this.matrix = sortCol(this.matrix, ...params)
+              this._operations.push([sortCol, [...params]])
+              // this.matrix = sortCol(this.matrix, ...params)
               break
             case 'sortby':
-              this.matrix = sortBy(this.matrix, params)
+              this._operations.push([sortBy, [params]])
+              // this.matrix = sortBy(this.matrix, params)
               break
             case 'reverse':
-              this.matrix = reverseRows(this.matrix, params)
+              this._operations.push([reverseRows, [params]])
+              // this.matrix = reverseRows(this.matrix, params)
               break
             case 'roll':
-              this.matrix = roll(this.matrix, ...params)
+              this._operations.push([roll, [...params]])
+              // this.matrix = roll(this.matrix, ...params)
               break
             case 'weight':
-              this.matrix = weight(this.matrix, ...params)
-              // Set the number of cycles to the length of the generated matrix
-              this.vars.cycles = this.matrix.length
+              this._operations.push([weight, [...params]])
+              // this.matrix = weight(this.matrix, ...params)
               break
           }
         }
       }
+      // Set the number of cycles to the length of the generated matrix
+      this.vars.cycles = this.matrix.length
     }
   }
 
@@ -166,14 +197,16 @@ export default class Loop extends Item {
           // value contains ast tree, run the parser.
           try {
             // Evaluate the expression
-            value = this.experiment._runner._pythonParser._runstatement(value)
+            value = this._runner._pythonParser._runstatement(value)
           } catch (e) {
             // Error during evaluation.
-            this.experiment._runner._debugger.addError(
+            this._runner._debugger.addError(
               'Failed to evaluate expression in in loop item: ' + this.name + ' (' + value + ')')
           }
+        } else {
+          // Evaluate variabels potentially available in value.
+          value = this._runner._syntax.eval_text(value)
         }
-
         // Set the variable.
         this.experiment.vars.set(variable, value)
       }
@@ -182,76 +215,63 @@ export default class Loop extends Item {
 
   /** Implements the prepare phase of an item. */
   prepare () {
-    //  First generate a list of cycle numbers
-    this._cycles = []
-    this._index = 0
-
-    // Walk through all complete repeats
-    var wholeRepeats = Math.floor(this.vars.get('repeat'))
-    for (let j = 0; j < wholeRepeats; j++) {
-      for (let i = 0; i < this.vars.cycles; i++) {
-        this._cycles.push(i)
-      }
-    }
-
-    // Add the leftover repeats.
-    const partialRepeats = this.vars.get('repeat') - wholeRepeats
-    if (partialRepeats > 0) {
-      const allCycles = Array.apply(null, {
-        length: this.vars.cycles
-      }).map(Number.call, Number)
-      const remainder = Math.floor(this.vars.cycles * partialRepeats)
-      for (let i = 0; i < remainder; i++) {
-        // Calculate random position.
-        const position = Math.floor(Math.random() * allCycles.length)
-        // Add position to cycles.
-        this._cycles.push(position)
-        // Remove position from array.
-        allCycles.splice(position, 1)
-      }
-    }
-
-    // Randomize the list if necessary.
-    if (this.vars.get('order') === 'random') {
-      this._cycles = shuffle(this._cycles)
-    } else {
-      const skipVal = this.vars.get('skip')
-      // In sequential order, the offset and the skip are relevant.
-      if (this._cycles.length < skipVal) {
-        this.experiment._runner._debugger.addError('The value of skip is too high in loop item. ' +
-          'You cannot skip more cycles than there are in: ' + this.name)
-      } else {
-        if (this.vars.get('offset') === 'yes') {
-          // Get the skip elements.
-          const skip = this._cycles.slice(0, skipVal)
-
-          // Remove the skip elements from the original location.
-          this._cycles = this._cycles.slice(skipVal)
-
-          // Add the skip element to the end.
-          this._cycles = this._cycles.concat(skip)
-        } else {
-          this._cycles = this._cycles.slice(skipVal)
-        }
-      }
-    }
-
-    this._keyboard = new Keyboard(this.experiment)
 
     // Make sure the item to run exists.
     if (this.experiment.items._items[this.vars.item] === 'undefined') {
-      this.experiment._runner._debugger.addError('Could not find an item which is called by loop item: ' +
+      this._runner._debugger.addError('Could not find an item which is called by loop item: ' +
       this.name + ' (' + this.vars.item + ')')
     }
-
+    this._initialized = false
     super.prepare()
-
     this.set_item_onset()
   }
 
   /** Implements the run phase of an item. */
   run () {
     super.run()
+
+    if (!this._initialized) {
+      // Perform the operations
+      this.matrix = this._operations.reduce((mtrx, [func, args]) =>
+        func(mtrx, ...this._eval_args(args)), this.matrix)
+      // Set the number of cycles to the length of the generated matrix
+      this.vars.cycles = this.matrix.length
+
+      // Walk through all complete repeats
+      const wholeRepeats = Math.floor(this.vars.get('repeat'))
+      for (let j = 0; j < wholeRepeats; j++) {
+        for (let i = 0; i < this.vars.cycles; i++) {
+          this._cycles.push(i)
+        }
+      }
+
+      // Add the leftover repeats.
+      const partialRepeats = this.vars.get('repeat') - wholeRepeats
+      if (partialRepeats > 0) {
+        // Get the amount of cycles to still repeat
+        const remainder = Math.floor(this.vars.cycles * partialRepeats)
+
+        let cycles = [...Array(this.vars.cycles).keys()]
+
+        if (this.vars.get('order') === 'random') {
+          // For randomly ordered loops, shuffle the order of the pool
+          // This makes sure that the next step of determining the repeatcycles
+          // is a 'random selection without replacement'
+          cycles = shuffle(cycles)
+        }
+        // Get the required amount of cycles to repeat from the pool.
+        let repeatCycles = cycles.splice(0, remainder)
+        // Add these cycles to the original cycles array
+        this._cycles = [...this._cycles, ...repeatCycles]
+      }
+
+      // Shuffle everything!.
+      if (this.vars.get('order') === 'random') {
+        this._cycles = shuffle(this._cycles)
+      }
+
+      this._initialized = true
+    }
 
     const break_if_val = this.vars.get('break_if')
     this._break_if = ['never', ''].includes(break_if_val)
@@ -260,7 +280,7 @@ export default class Loop extends Item {
 
     // Check if if the cycle must be repeated.
     if (this.experiment.vars.repeat_cycle === 1 && isNumber(this._index)) {
-      this.experiment._runner._debugger.msg('Repeating cycle: ' + this._index)
+      this._runner._debugger.msg('Repeating cycle: ' + this._index)
       this._cycles.push(this._index)
       if (this.vars.get('order') === 'random') {
         this._cycles = shuffle(this._cycles)
@@ -284,9 +304,9 @@ export default class Loop extends Item {
       }
 
       if (this._runner._itemStore._items[this.vars.item].type === 'sequence') {
-        this.experiment._runner._itemStore.prepare(this.vars.item, this)
+        this._runner._itemStore.prepare(this.vars.item, this)
       } else {
-        this.experiment._runner._itemStore.execute(this.vars.item, this)
+        this._runner._itemStore.execute(this.vars.item, this)
       }
     } else {
       // Break the loop.
