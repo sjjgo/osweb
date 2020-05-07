@@ -162,7 +162,7 @@ export default class Keyboard {
    * @return {Array} - List of default values for the given responses.
    */
   _get_default_from_synoniem (responses) {
-    let defaults = []
+    const defaults = []
     let synonyms
     for (let i = 0; i < responses.length; i++) {
       synonyms = this._synonyms(responses[i])
