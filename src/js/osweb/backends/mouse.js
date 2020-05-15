@@ -99,7 +99,7 @@ export default class Mouse {
 
       // Set the event processor.
       this._experiment._runner._events._run(this._timeOut, constants.RESPONSE_MOUSE, this._buttonList)
-    };
+    }
   }
 
   /**
@@ -111,15 +111,15 @@ export default class Mouse {
     // Returns the current mouse position. !Warning: this methods uses the state in the last known mouse respone, not the current state.
     if (this._experiment._runner._events._mouseMoveEvent !== null) {
       return {
-        'rtTime': this._experiment._runner._events._mouseMoveEvent.rtTime,
-        'x': this._experiment._runner._events._mouseMoveEvent.event.clientX,
-        'y': this._experiment._runner._events._mouseMoveEvent.event.clientY
+        rtTime: this._experiment._runner._events._mouseMoveEvent.rtTime,
+        x: this._experiment._runner._events._mouseMoveEvent.event.clientX,
+        y: this._experiment._runner._events._mouseMoveEvent.event.clientY
       }
     } else {
       return {
-        'rtTime': -1,
-        'x': -1,
-        'y': -1
+        rtTime: -1,
+        x: -1,
+        y: -1
       }
     }
   }
@@ -133,14 +133,14 @@ export default class Mouse {
     // Returns the current button state of the mouse buttons. !Warning: this methods uses the state in the last known mouse respone, not the current state.
     if (this._experiment._runner.events._mouse_press !== null) {
       return {
-        'buttons': [(this._experiment._runner._events._mouseDownEvent.event.button === 0),
+        buttons: [(this._experiment._runner._events._mouseDownEvent.event.button === 0),
           (this._experiment._runner._events._mouseDownEvent.event.button === 1),
           (this._experiment._runner._events._mouseDownEvent.event.button === 2)
         ]
       }
     } else {
       return {
-        'buttons': [null, null, null]
+        buttons: [null, null, null]
       }
     }
   }

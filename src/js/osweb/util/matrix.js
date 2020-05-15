@@ -80,7 +80,7 @@ export function shuffleVert (matrix, columns) {
   } else if (!isArray(columns)) {
     throw new TypeError('Invalid argument for columns passed to shuffleVert. Expects an array containing column names')
   } else {
-    let grouped = unstack(matrix)
+    const grouped = unstack(matrix)
     let cols = pick(grouped, columns)
     cols = Object.entries(cols).reduce((prev, [key, values]) => {
       prev[key] = shuffle(values)
@@ -158,7 +158,7 @@ export function reverseRows (matrix, columns) {
   if (columns.length === 0) {
     return reverse(matrix)
   } else {
-    let grouped = unstack(matrix)
+    const grouped = unstack(matrix)
     let cols = pick(grouped, columns)
     if (isEmpty(cols)) {
       throw new ReferenceError(`one or more of ${columns} were not found in the matrix`)
@@ -199,8 +199,8 @@ export function roll (matrix, amount, column) {
   if (!isString(column)) {
     throw new TypeError(`column expects a string, was ${column}`)
   } else {
-    let grouped = unstack(matrix)
-    if (!grouped.hasOwnProperty(column)) {
+    const grouped = unstack(matrix)
+    if (!Object.prototype.hasOwnProperty.call(grouped, column)) {
       throw new ReferenceError(`Could not find column ${column} in matrix`)
     }
     grouped[column] = rollN(grouped[column], amount)
@@ -241,7 +241,7 @@ export function weight (matrix, weightCol) {
   if (!isString(weightCol)) {
     throw new TypeError('Invalid argument passed to weight. Expects a column name')
   }
-  if (!matrix[0].hasOwnProperty(weightCol)) {
+  if (!Object.prototype.hasOwnProperty.call(matrix[0], weightCol)) {
     throw new ReferenceError(`Column '${weightCol}' not found in matrix`)
   }
   return matrix.reduce((result, item) => {

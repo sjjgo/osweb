@@ -37,11 +37,11 @@ export default class PythonParser {
   /** Initialization phase of the python class. */
   _initialize () {
     // Set the python variable connections with opensesame.
-    this._variables['clock'] = this._runner._experiment.clock
-    this._variables['exp'] = this._runner._experiment
-    this._variables['items'] = this._runner._itemStore
-    this._variables['pool'] = this._runner._pool
-    this._variables['var'] = this._runner._experiment.vars
+    this._variables.clock = this._runner._experiment.clock
+    this._variables.exp = this._runner._experiment
+    this._variables.items = this._runner._itemStore
+    this._variables.pool = this._runner._pool
+    this._variables.var = this._runner._experiment.vars
 
     // Set the console handler.
     if (this._runner._onConsole !== null) {
@@ -71,7 +71,8 @@ export default class PythonParser {
         var code = script
         var ast = parseFn(code, {
           locations: locations,
-          ranges: ranges })
+          ranges: ranges
+        })
         return ast
       } catch (e) {
         this._runner._debugger.addError('Script parsing error: ' + e.message)
@@ -116,7 +117,7 @@ export default class PythonParser {
       // Check if the identifier is part of the import scope.
       if (items[1] === 'imports') {
         var import_lib = filbert.pythonRuntime.imports[items[2]]
-        let value = import_lib[items[3]]
+        const value = import_lib[items[3]]
         // Attempt to convert the value to a number,
         // if this fails return the original value
         return isNaN(toNumber(value)) ? value : toNumber(value)
@@ -151,41 +152,23 @@ export default class PythonParser {
      */
   _get_element_value (element) {
     switch (element.type) {
-      case 'identifier':
-        // Split the identifier name space.
-        var items = element.value.split('.')
+    case 'identifier':
+      // Split the identifier name space.
+      var items = element.value.split('.')
 
-        // Set the element value in the global scope.
-        if (items.length === 1) {
-          if (this._variables[items[0]] !== undefined) {
-            return this._variables[items[0]]
-          } else {
-            return window[items[0]]
-          }
+      // Set the element value in the global scope.
+      if (items.length === 1) {
+        if (this._variables[items[0]] !== undefined) {
+          return this._variables[items[0]]
         } else {
-          if (items[0].indexOf('__filbertRight') !== -1) {
-            if (items[1].indexOf('__filbertIndex') !== -1) {
-              var container = this._variables[items[0]]
-              var index = this._variables[items[1]]
-              return container[index]
-            } else {
-              if (this._variables[items[0]] !== undefined) {
-                return this._variables[items[0]][items[1]]
-              } else {
-                return window[items[0]][items[1]]
-              }
-            }
-          } else if (items[0] === '__pythonRuntime') {
-            if (items[1] === 'imports') {
-              const import_lib = filbert.pythonRuntime.imports[items[2]]
-              let value = import_lib[items[3]]
-              // Attempt to convert the value to a number,
-              // if this fails return the original value
-              return isNaN(toNumber(value)) ? value : toNumber(value)
-            } else {
-              var default_lib = filbert.pythonRuntime[items[1]]
-              return default_lib[items[2]]
-            }
+          return window[items[0]]
+        }
+      } else {
+        if (items[0].indexOf('__filbertRight') !== -1) {
+          if (items[1].indexOf('__filbertIndex') !== -1) {
+            var container = this._variables[items[0]]
+            var index = this._variables[items[1]]
+            return container[index]
           } else {
             if (this._variables[items[0]] !== undefined) {
               return this._variables[items[0]][items[1]]
@@ -193,10 +176,28 @@ export default class PythonParser {
               return window[items[0]][items[1]]
             }
           }
+        } else if (items[0] === '__pythonRuntime') {
+          if (items[1] === 'imports') {
+            const import_lib = filbert.pythonRuntime.imports[items[2]]
+            const value = import_lib[items[3]]
+            // Attempt to convert the value to a number,
+            // if this fails return the original value
+            return isNaN(toNumber(value)) ? value : toNumber(value)
+          } else {
+            var default_lib = filbert.pythonRuntime[items[1]]
+            return default_lib[items[2]]
+          }
+        } else {
+          if (this._variables[items[0]] !== undefined) {
+            return this._variables[items[0]][items[1]]
+          } else {
+            return window[items[0]][items[1]]
+          }
         }
-      case 'literal':
-        // return the value of the literal.
-        return element.value
+      }
+    case 'literal':
+      // return the value of the literal.
+      return element.value
     }
   }
 
@@ -287,52 +288,52 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // process id.
-        this._node.status = 1
-        this._set_node(this._node.left)
+    case 0:
+      // process id.
+      this._node.status = 1
+      this._set_node(this._node.left)
 
-        // Return to the processor.
-        this._process_nodes()
+      // Return to the processor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process init.
+      this._node.status = 2
+      this._set_node(this._node.right)
+
+      // Return to the processor.
+      this._process_nodes()
+      break
+    case 2:
+      // define variables
+      var tmp_value
+
+      // Select binary operator.
+      switch (this._node.operator) {
+      case '=':
+        // Process the init value.
+        this._set_element_value(this._node.return_values[0], this._get_element_value(this._node.return_values[1]))
         break
-      case 1:
-        // Process init.
-        this._node.status = 2
-        this._set_node(this._node.right)
-
-        // Return to the processor.
-        this._process_nodes()
+      case '-=':
+        tmp_value = this._get_element_value(this._node.return_values[0])
+        this._set_element_value(this._node.return_values[0], tmp_value - this._get_element_value(this._node.return_values[1]))
         break
-      case 2:
-        // define variables
-        var tmp_value
-
-        // Select binary operator.
-        switch (this._node.operator) {
-          case '=':
-            // Process the init value.
-            this._set_element_value(this._node.return_values[0], this._get_element_value(this._node.return_values[1]))
-            break
-          case '-=':
-            tmp_value = this._get_element_value(this._node.return_values[0])
-            this._set_element_value(this._node.return_values[0], tmp_value - this._get_element_value(this._node.return_values[1]))
-            break
-          case '/=':
-            tmp_value = this._get_element_value(this._node.return_values[0])
-            this._set_element_value(this._node.return_values[0], tmp_value / this._get_element_value(this._node.return_values[1]))
-            break
-          case '%=':
-            tmp_value = this._get_element_value(this._node.return_values[0])
-            this._set_element_value(this._node.return_values[0], tmp_value % this._get_element_value(this._node.return_values[1]))
-            break
-        }
-
-        // Reset node index and return to the parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
+      case '/=':
+        tmp_value = this._get_element_value(this._node.return_values[0])
+        this._set_element_value(this._node.return_values[0], tmp_value / this._get_element_value(this._node.return_values[1]))
         break
+      case '%=':
+        tmp_value = this._get_element_value(this._node.return_values[0])
+        this._set_element_value(this._node.return_values[0], tmp_value % this._get_element_value(this._node.return_values[1]))
+        break
+      }
+
+      // Reset node index and return to the parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -343,75 +344,75 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.left)
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.left)
 
-        // Return to the node processor.
-        this._process_nodes()
+      // Return to the node processor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process property
+      this._node.status = 2
+      this._set_node(this._node.right)
+
+      // Return to the node processor.
+      this._process_nodes()
+      break
+    case 2:
+      // define variables.
+      var left = this._get_element_value(this._node.return_values[0])
+      var right = this._get_element_value(this._node.return_values[1])
+      var return_value = { type: 'literal' }
+
+      // Select binary operator.
+      switch (this._node.operator) {
+      case '-':
+        return_value.value = left - right
         break
-      case 1:
-        // Process property
-        this._node.status = 2
-        this._set_node(this._node.right)
-
-        // Return to the node processor.
-        this._process_nodes()
+      case '/':
+        return_value.value = left / right
         break
-      case 2:
-        // define variables.
-        var left = this._get_element_value(this._node.return_values[0])
-        var right = this._get_element_value(this._node.return_values[1])
-        var return_value = { type: 'literal' }
-
-        // Select binary operator.
-        switch (this._node.operator) {
-          case '-':
-            return_value.value = left - right
-            break
-          case '/':
-            return_value.value = left / right
-            break
-          case '==':
-            return_value.value = (left === right)
-            break
-          case '!=':
-            return_value.value = (left !== right)
-            break
-          case '>':
-            return_value.value = (left > right)
-            break
-          case '<':
-            return_value.value = (left < right)
-            break
-          case '>=':
-            return_value.value = (left >= right)
-            break
-          case '<=':
-            return_value.value = (left <= right)
-            break
-          case '%':
-            if ((typeof left === 'number') && (typeof right === 'number')) {
-              return_value.value = left % right
-            } else {
-              return_value.value = left.replace(/%s/g, right)
-            }
-            break
-          case 'instanceof':
-            return_value.value = left instanceof right
-            break
+      case '==':
+        return_value.value = (left === right)
+        break
+      case '!=':
+        return_value.value = (left !== right)
+        break
+      case '>':
+        return_value.value = (left > right)
+        break
+      case '<':
+        return_value.value = (left < right)
+        break
+      case '>=':
+        return_value.value = (left >= right)
+        break
+      case '<=':
+        return_value.value = (left <= right)
+        break
+      case '%':
+        if ((typeof left === 'number') && (typeof right === 'number')) {
+          return_value.value = left % right
+        } else {
+          return_value.value = left.replace(/%s/g, right)
         }
-
-        // Set the return value.
-        this._set_return_value(return_value)
-
-        // Reset node index and return to the parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
         break
+      case 'instanceof':
+        return_value.value = left instanceof right
+        break
+      }
+
+      // Set the return value.
+      this._set_return_value(return_value)
+
+      // Reset node index and return to the parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -461,75 +462,63 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process arguments and caller.
-        if (this._node.index < this._node.arguments.length) {
-          // Set current node to next node in list.
-          this._node.index++
-          this._set_node(this._node.arguments[this._node.index - 1])
+    case 0:
+      // Process arguments and caller.
+      if (this._node.index < this._node.arguments.length) {
+        // Set current node to next node in list.
+        this._node.index++
+        this._set_node(this._node.arguments[this._node.index - 1])
 
-          // Return to the node processessor.
-          this._process_nodes()
+        // Return to the node processessor.
+        this._process_nodes()
+      } else {
+        // Set parent node.
+        this._node.status = 1
+        this._set_node(this._node.callee)
+
+        // Return to the node processor.
+        this._process_nodes()
+      }
+      break
+    case 1:
+      // Get the first return value, which is the name of the caller element.
+      var return_value = this._node.return_values.pop()
+
+      // Get the arguments used on the caller element.
+      var tmp_arguments = []
+      for (var i = 0; i < this._node.return_values.length; i++) {
+        tmp_arguments.push(this._get_element_value(this._node.return_values[i]))
+      }
+
+      var caller = this._get_element(return_value)
+      var context = this._get_context(return_value)
+
+      if ((return_value.value === 'sleep') || (return_value.value === '__pythonRuntime.imports.clock.sleep')) {
+        // Adjust the status to special.
+        this._node.status = 2
+
+        // Check the context.
+        if (typeof context === 'undefined') {
+          context = this
+        }
+
+        // Execute the blocking call.
+        caller.apply(context, tmp_arguments)
+      } else {
+        // Check the context.
+        if (typeof context === 'undefined') {
+          context = this
+        }
+
+        // Execute the call, check first for internal function call.
+        if (this._node.callee.type === 'FunctionExpression') {
+          return_value = { type: 'literal', value: caller }
         } else {
-          // Set parent node.
-          this._node.status = 1
-          this._set_node(this._node.callee)
-
-          // Return to the node processor.
-          this._process_nodes()
-        }
-        break
-      case 1:
-        // Get the first return value, which is the name of the caller element.
-        var return_value = this._node.return_values.pop()
-
-        // Get the arguments used on the caller element.
-        var tmp_arguments = []
-        for (var i = 0; i < this._node.return_values.length; i++) {
-          tmp_arguments.push(this._get_element_value(this._node.return_values[i]))
+          return_value = { type: 'literal', value: caller.apply(context, tmp_arguments) }
         }
 
-        var caller = this._get_element(return_value)
-        var context = this._get_context(return_value)
-
-        if ((return_value.value === 'sleep') || (return_value.value === '__pythonRuntime.imports.clock.sleep')) {
-          // Adjust the status to special.
-          this._node.status = 2
-
-          // Check the context.
-          if (typeof context === 'undefined') {
-            context = this
-          }
-
-          // Execute the blocking call.
-          caller.apply(context, tmp_arguments)
-        } else {
-          // Check the context.
-          if (typeof context === 'undefined') {
-            context = this
-          }
-
-          // Execute the call, check first for internal function call.
-          if (this._node.callee.type === 'FunctionExpression') {
-            return_value = { type: 'literal', value: caller }
-          } else {
-            return_value = { type: 'literal', value: caller.apply(context, tmp_arguments) }
-          }
-
-          // Set the return value.
-          this._set_return_value(return_value)
-
-          // Reset node index and return to the parent node.
-          this._node.index = 0
-          this._node.status = 0
-          this._node.return_values = []
-          this._node = this._node.parent
-          this._process_nodes()
-        }
-        break
-      case 2:
-        // Special state used when calling a blocking method (sleep, clock.sleep, keyboard.get_key(), mouse.get_click).
-        this._set_return_value(this.global_return_value)
+        // Set the return value.
+        this._set_return_value(return_value)
 
         // Reset node index and return to the parent node.
         this._node.index = 0
@@ -537,7 +526,19 @@ export default class PythonParser {
         this._node.return_values = []
         this._node = this._node.parent
         this._process_nodes()
-        break
+      }
+      break
+    case 2:
+      // Special state used when calling a blocking method (sleep, clock.sleep, keyboard.get_key(), mouse.get_click).
+      this._set_return_value(this.global_return_value)
+
+      // Reset node index and return to the parent node.
+      this._node.index = 0
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -580,50 +581,50 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.init)
+
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process object.
+      this._node.status = 2
+      this._set_node(this._node.test)
+
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 2:
+      // Check if the test node has returned true.
+      if (this._node.return_values[0].value === true) {
         // Process object.
-        this._node.status = 1
-        this._set_node(this._node.init)
+        this._node.status = 3
+        this._node.return_values = []
+        this._set_node(this._node.body)
 
         // Return to the node processessor.
         this._process_nodes()
-        break
-      case 1:
-        // Process object.
-        this._node.status = 2
-        this._set_node(this._node.test)
+      } else {
+        // Range has ended.
+        this._node.status = 0
+        this._node.return_values = []
+        this._node = this._node.parent
 
         // Return to the node processessor.
         this._process_nodes()
-        break
-      case 2:
-        // Check if the test node has returned true.
-        if (this._node.return_values[0].value === true) {
-          // Process object.
-          this._node.status = 3
-          this._node.return_values = []
-          this._set_node(this._node.body)
+      }
+      break
+    case 3:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.update)
 
-          // Return to the node processessor.
-          this._process_nodes()
-        } else {
-          // Range has ended.
-          this._node.status = 0
-          this._node.return_values = []
-          this._node = this._node.parent
-
-          // Return to the node processessor.
-          this._process_nodes()
-        }
-        break
-      case 3:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.update)
-
-        // Return to the node processessor.
-        this._process_nodes()
-        break
+      // Return to the node processessor.
+      this._process_nodes()
+      break
     }
   }
 
@@ -635,45 +636,45 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.left)
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.left)
 
-        // Return to the node processessor.
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process object.
+      this._node.status = 2
+      this._set_node(this._node.right)
+
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 2:
+      // Retrieve the range on which the loop travels.
+      var tmp_range = this._get_element_value(this._node.return_values[1])
+
+      // Execute the range.
+      if (this._node.index < tmp_range.length) {
+        // Set the value of the range.
+        this._set_element_value(this._node.return_values[0], tmp_range[this._node.index])
+
+        // Increase the index.
+        this._node.index++
+
+        // Execute the body.
+        this._set_node(this._node.body)
         this._process_nodes()
-        break
-      case 1:
-        // Process object.
-        this._node.status = 2
-        this._set_node(this._node.right)
-
-        // Return to the node processessor.
+      } else {
+        this._node.index = 0
+        this._node.status = 0
+        this._node.return_values = []
+        this._node = this._node.parent
         this._process_nodes()
-        break
-      case 2:
-        // Retrieve the range on which the loop travels.
-        var tmp_range = this._get_element_value(this._node.return_values[1])
-
-        // Execute the range.
-        if (this._node.index < tmp_range.length) {
-          // Set the value of the range.
-          this._set_element_value(this._node.return_values[0], tmp_range[this._node.index])
-
-          // Increase the index.
-          this._node.index++
-
-          // Execute the body.
-          this._set_node(this._node.body)
-          this._process_nodes()
-        } else {
-          this._node.index = 0
-          this._node.status = 0
-          this._node.return_values = []
-          this._node = this._node.parent
-          this._process_nodes()
-        }
-        break
+      }
+      break
     }
   }
 
@@ -684,27 +685,27 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process defaults.
-        this._node.status = 1
-        this._set_node(this._node.body)
+    case 0:
+      // Process defaults.
+      this._node.status = 1
+      this._set_node(this._node.body)
 
-        // Return to the node processor.
-        this._process_nodes()
-        break
-      case 1:
-        // Remove the last return value from the global function stack.
-        var return_value = this._function_stack.pop()
+      // Return to the node processor.
+      this._process_nodes()
+      break
+    case 1:
+      // Remove the last return value from the global function stack.
+      var return_value = this._function_stack.pop()
 
-        // Set the return value
-        this._set_return_value(return_value)
+      // Set the return value
+      this._set_return_value(return_value)
 
-        // Set parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
-        break
+      // Set parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -729,44 +730,44 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.test)
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.test)
+
+      // Return to the node processor.
+      this._process_nodes()
+      break
+    case 1:
+      // Check if expression is true.
+      if (this._node.return_values[0].value === true) {
+        this._node.status = 2
+        this._set_node(this._node.consequent)
 
         // Return to the node processor.
         this._process_nodes()
-        break
-      case 1:
-        // Check if expression is true.
-        if (this._node.return_values[0].value === true) {
-          this._node.status = 2
-          this._set_node(this._node.consequent)
+      } else if (this._node.alternate !== null) {
+        this._node.status = 2
+        this._set_node(this._node.alternate)
 
-          // Return to the node processor.
-          this._process_nodes()
-        } else if (this._node.alternate !== null) {
-          this._node.status = 2
-          this._set_node(this._node.alternate)
-
-          // Return to the node processor.
-          this._process_nodes()
-        } else {
-          this._node.status = 2
-          this._process_nodes()
-        }
-        break
-      case 2:
-        // Set parent node.
-        if (this._node.break === true) {
-          this._node.break = false
-          this._node.parent.break = true
-        }
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
+        // Return to the node processor.
         this._process_nodes()
-        break
+      } else {
+        this._node.status = 2
+        this._process_nodes()
+      }
+      break
+    case 2:
+      // Set parent node.
+      if (this._node.break === true) {
+        this._node.break = false
+        this._node.parent.break = true
+      }
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -790,47 +791,47 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.left)
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.left)
 
-        // Return to the node processor.
-        this._process_nodes()
+      // Return to the node processor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process property
+      this._node.status = 2
+      this._set_node(this._node.right)
+
+      // Return to the node processor.
+      this._process_nodes()
+      break
+    case 2:
+      // define variables.
+      var left = this._get_element_value(this._node.return_values[0])
+      var right = this._get_element_value(this._node.return_values[1])
+      var return_value = { type: 'literal' }
+
+      // Select binary operator.
+      switch (this._node.operator) {
+      case '&&':
+        return_value.value = left && right
         break
-      case 1:
-        // Process property
-        this._node.status = 2
-        this._set_node(this._node.right)
-
-        // Return to the node processor.
-        this._process_nodes()
+      case '||':
+        return_value.value = left || right
         break
-      case 2:
-        // define variables.
-        var left = this._get_element_value(this._node.return_values[0])
-        var right = this._get_element_value(this._node.return_values[1])
-        var return_value = { type: 'literal' }
+      }
 
-        // Select binary operator.
-        switch (this._node.operator) {
-          case '&&':
-            return_value.value = left && right
-            break
-          case '||':
-            return_value.value = left || right
-            break
-        }
+      // Set the return value.
+      this._set_return_value(return_value)
 
-        // Set the return value.
-        this._set_return_value(return_value)
-
-        // Reset node index and return to the parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
-        break
+      // Reset node index and return to the parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -841,35 +842,35 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.object)
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.object)
 
-        // Return to the node processessor.
-        this._process_nodes()
-        break
-      case 1:
-        // Process property
-        this._node.status = 2
-        this._set_node(this._node.property)
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process property
+      this._node.status = 2
+      this._set_node(this._node.property)
 
-        // Return to the node processessor.
-        this._process_nodes()
-        break
-      case 2:
-        // Build the combing return value.
-        var return_value = { type: 'identifier', value: this._node.return_values[0].value + '.' + this._node.return_values[1].value }
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 2:
+      // Build the combing return value.
+      var return_value = { type: 'identifier', value: this._node.return_values[0].value + '.' + this._node.return_values[1].value }
 
-        // Set the return value
-        this._set_return_value(return_value)
+      // Set the return value
+      this._set_return_value(return_value)
 
-        // Reset node index and return to the parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
-        break
+      // Reset node index and return to the parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -955,29 +956,30 @@ export default class PythonParser {
     // Initialize status property.
     this._node.status = (typeof this._node.status === 'undefined') ? 0 : this._node.status
 
+    let returnValue
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Process object.
-        this._node.status = 1
-        this._set_node(this._node.argument)
+    case 0:
+      // Process object.
+      this._node.status = 1
+      this._set_node(this._node.argument)
 
-        // Return to the node processessor.
-        this._process_nodes()
-        break
-      case 1:
-        // Set return value.
-        const returnValue = { type: 'identifier', value: this._node.return_values[0].value }
+      // Return to the node processessor.
+      this._process_nodes()
+      break
+    case 1:
+      // Set return value.
+      returnValue = { type: 'identifier', value: this._node.return_values[0].value }
 
-        // Set the return value
-        this._function_stack.push(returnValue)
+      // Set the return value
+      this._function_stack.push(returnValue)
 
-        // Reset node index and return to the parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
-        break
+      // Reset node index and return to the parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -999,12 +1001,12 @@ export default class PythonParser {
 
       // process the operator.
       switch (this._node.operator) {
-        case '!' :
-          return_value.value = !(this._node.return_values[0].value)
-          break
-        case '-' :
-          return_value.value = -(this._node.return_values[0].value)
-          break
+      case '!' :
+        return_value.value = !(this._node.return_values[0].value)
+        break
+      case '-' :
+        return_value.value = -(this._node.return_values[0].value)
+        break
       }
 
       // Set the return value
@@ -1034,9 +1036,9 @@ export default class PythonParser {
     } else {
       // Process the init value.
       switch (this._node.operator) {
-        case '++' :
-          this._set_element_value(this._node.return_values[0], this._get_element_value(this._node.return_values[0]) + 1)
-          break
+      case '++' :
+        this._set_element_value(this._node.return_values[0], this._get_element_value(this._node.return_values[0]) + 1)
+        break
       }
 
       // Return to the node processessor.
@@ -1075,32 +1077,32 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // process id.
-        this._node.status = 1
-        this._set_node(this._node.id)
+    case 0:
+      // process id.
+      this._node.status = 1
+      this._set_node(this._node.id)
 
-        // Return to the processor.
-        this._process_nodes()
-        break
-      case 1:
-        // Process init.
-        this._node.status = 2
-        this._set_node(this._node.init)
+      // Return to the processor.
+      this._process_nodes()
+      break
+    case 1:
+      // Process init.
+      this._node.status = 2
+      this._set_node(this._node.init)
 
-        // Return to the processor.
-        this._process_nodes()
-        break
-      case 2:
-        // Process the init value.
-        this._set_element_value(this._node.return_values[0], this._get_element_value(this._node.return_values[1]))
+      // Return to the processor.
+      this._process_nodes()
+      break
+    case 2:
+      // Process the init value.
+      this._set_element_value(this._node.return_values[0], this._get_element_value(this._node.return_values[1]))
 
-        // Reset node index and return to the parent node.
-        this._node.status = 0
-        this._node.return_values = []
-        this._node = this._node.parent
-        this._process_nodes()
-        break
+      // Reset node index and return to the parent node.
+      this._node.status = 0
+      this._node.return_values = []
+      this._node = this._node.parent
+      this._process_nodes()
+      break
     }
   }
 
@@ -1112,44 +1114,44 @@ export default class PythonParser {
 
     // Process the current status.
     switch (this._node.status) {
-      case 0:
-        // Check for the break flag.
-        if (this._node.break === true) {
-          this._node.break = false
-          // Set parent node.
-          this._node.status = 0
-          this._node.return_values = []
-          this._node = this._node.parent
-          this._process_nodes()
-        } else {
-          // Process object.
-          this._node.status = 1
-          this._set_node(this._node.test)
+    case 0:
+      // Check for the break flag.
+      if (this._node.break === true) {
+        this._node.break = false
+        // Set parent node.
+        this._node.status = 0
+        this._node.return_values = []
+        this._node = this._node.parent
+        this._process_nodes()
+      } else {
+        // Process object.
+        this._node.status = 1
+        this._set_node(this._node.test)
 
-          // Return to the node processeor.
-          this._process_nodes()
-        }
-        break
-      case 1:
-        // Check if expression is true.
-        if (this._node.return_values[0].value === true) {
-          // Reset the test
-          this._node.status = 0
-          this._node.return_values = []
+        // Return to the node processeor.
+        this._process_nodes()
+      }
+      break
+    case 1:
+      // Check if expression is true.
+      if (this._node.return_values[0].value === true) {
+        // Reset the test
+        this._node.status = 0
+        this._node.return_values = []
 
-          // execute the body.
-          this._set_node(this._node.body)
+        // execute the body.
+        this._set_node(this._node.body)
 
-          // Return to the node processor.
-          this._process_nodes()
-        } else {
-          // Set parent node.
-          this._node.status = 0
-          this._node.return_values = []
-          this._node = this._node.parent
-          this._process_nodes()
-        }
-        break
+        // Return to the node processor.
+        this._process_nodes()
+      } else {
+        // Set parent node.
+        this._node.status = 0
+        this._node.return_values = []
+        this._node = this._node.parent
+        this._process_nodes()
+      }
+      break
     }
   }
 
@@ -1192,80 +1194,80 @@ export default class PythonParser {
   _process_nodes_timeout () {
     // Select the type of node to process
     switch (this._node.type) {
-      case 'ArrayExpression':
-        this._array_expression()
-        break
-      case 'AssignmentExpression':
-        this._assignment_expression()
-        break
-      case 'BinaryExpression':
-        this._binary_expression()
-        break
-      case 'BlockStatement':
-        this._block_statement()
-        break
-      case 'BreakStatement':
-        this._break_statement()
-        break
-      case 'CallExpression':
-        this._call_expression()
-        break
-      case 'EmptyStatement':
-        this._empty_statement()
-        break
-      case 'ExpressionStatement':
-        this._expression_statement()
-        break
-      case 'ForStatement':
-        this._for_statement()
-        break
-      case 'ForInStatement':
-        this._for_in_statement()
-        break
-      case 'FunctionExpression':
-        this._function_expression()
-        break
-      case 'Identifier':
-        this._identifier()
-        break
-      case 'IfStatement':
-        this._if_statement()
-        break
-      case 'Literal':
-        this._literal()
-        break
-      case 'LogicalExpression':
-        this._logical_expression()
-        break
-      case 'MemberExpression':
-        this._member_expression()
-        break
-      case 'NewExpression':
-        this._new_expression()
-        break
-      case 'Program':
-        this._program()
-        break
-      case 'ReturnStatement':
-        this._return_statement()
-        break
-      case 'UnaryExpression':
-        this._unary_expression()
-        break
-      case 'UpdateExpression':
-        this._update_expression()
-        break
-      case 'VariableDeclaration':
-        this._variable_declaration()
-        break
-      case 'VariableDeclarator':
-        this._variable_declarator()
-        break
-      case 'WhileStatement':
-        this._while_statement()
-        break
-      default:
-        this._runner._debugger.addError('Invalid node type to process: ' + this._node.type)
+    case 'ArrayExpression':
+      this._array_expression()
+      break
+    case 'AssignmentExpression':
+      this._assignment_expression()
+      break
+    case 'BinaryExpression':
+      this._binary_expression()
+      break
+    case 'BlockStatement':
+      this._block_statement()
+      break
+    case 'BreakStatement':
+      this._break_statement()
+      break
+    case 'CallExpression':
+      this._call_expression()
+      break
+    case 'EmptyStatement':
+      this._empty_statement()
+      break
+    case 'ExpressionStatement':
+      this._expression_statement()
+      break
+    case 'ForStatement':
+      this._for_statement()
+      break
+    case 'ForInStatement':
+      this._for_in_statement()
+      break
+    case 'FunctionExpression':
+      this._function_expression()
+      break
+    case 'Identifier':
+      this._identifier()
+      break
+    case 'IfStatement':
+      this._if_statement()
+      break
+    case 'Literal':
+      this._literal()
+      break
+    case 'LogicalExpression':
+      this._logical_expression()
+      break
+    case 'MemberExpression':
+      this._member_expression()
+      break
+    case 'NewExpression':
+      this._new_expression()
+      break
+    case 'Program':
+      this._program()
+      break
+    case 'ReturnStatement':
+      this._return_statement()
+      break
+    case 'UnaryExpression':
+      this._unary_expression()
+      break
+    case 'UpdateExpression':
+      this._update_expression()
+      break
+    case 'VariableDeclaration':
+      this._variable_declaration()
+      break
+    case 'VariableDeclarator':
+      this._variable_declarator()
+      break
+    case 'WhileStatement':
+      this._while_statement()
+      break
+    default:
+      this._runner._debugger.addError('Invalid node type to process: ' + this._node.type)
     }
   }
 
@@ -1310,7 +1312,7 @@ export default class PythonParser {
     this._inline_script = inline_script
 
     // set the self parameter.
-    this._variables['self'] = inline_script
+    this._variables.self = inline_script
 
     // Set the first node and its parent.
     this._node = ast_tree

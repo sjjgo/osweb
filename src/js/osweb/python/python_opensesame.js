@@ -17,41 +17,41 @@ export default class PythonOpenSesame {
     this._objects = {}
 
     // Insert clock class into the python interpreter.
-    filbert.pythonRuntime.imports['clock'] = {}
-    filbert.pythonRuntime.imports['clock']['sleep'] = this._runner._experiment.clock.sleep
-    filbert.pythonRuntime.imports['clock']['time'] = this._runner._experiment.clock.time
+    filbert.pythonRuntime.imports.clock = {}
+    filbert.pythonRuntime.imports.clock.sleep = this._runner._experiment.clock.sleep
+    filbert.pythonRuntime.imports.clock.time = this._runner._experiment.clock.time
 
     // Insert log class into the python interpreter.
-    filbert.pythonRuntime.imports['log'] = {}
-    filbert.pythonRuntime.imports['log']['close'] = this._runner._experiment._log.close
-    filbert.pythonRuntime.imports['log']['open'] = this._runner._experiment._log.open
-    filbert.pythonRuntime.imports['log']['write'] = this._runner._experiment._log.write
-    filbert.pythonRuntime.imports['log']['write_vars'] = this._runner._experiment._log.write_vars
+    filbert.pythonRuntime.imports.log = {}
+    filbert.pythonRuntime.imports.log.close = this._runner._experiment._log.close
+    filbert.pythonRuntime.imports.log.open = this._runner._experiment._log.open
+    filbert.pythonRuntime.imports.log.write = this._runner._experiment._log.write
+    filbert.pythonRuntime.imports.log.write_vars = this._runner._experiment._log.write_vars
 
     // Insert var class into the python interpreter.
-    filbert.pythonRuntime.imports['var'] = this._runner._experiment.vars
-    filbert.pythonRuntime.imports['var']['get'] = this._runner._experiment.vars.get
-    filbert.pythonRuntime.imports['var']['has'] = this._runner._experiment.vars.has
-    filbert.pythonRuntime.imports['var']['set'] = this._runner._experiment.vars.set
-    filbert.pythonRuntime.imports['var']['unset'] = this._runner._experiment.vars.unset
+    filbert.pythonRuntime.imports.var = this._runner._experiment.vars
+    filbert.pythonRuntime.imports.var.get = this._runner._experiment.vars.get
+    filbert.pythonRuntime.imports.var.has = this._runner._experiment.vars.has
+    filbert.pythonRuntime.imports.var.set = this._runner._experiment.vars.set
+    filbert.pythonRuntime.imports.var.unset = this._runner._experiment.vars.unset
 
     // Insert general opensesame methods into the python interpreter.
-    filbert.pythonRuntime.functions['reset_feedback'] = this._runner._experiment.reset_feedback
-    filbert.pythonRuntime.functions['set_subject_nr'] = this._runner._experiment.set_subject
-    filbert.pythonRuntime.functions['canvas'] = this.canvas
-    filbert.pythonRuntime.functions['copy_sketchpad'] = this.copy_sketchpad
-    filbert.pythonRuntime.functions['keyboard'] = this.keyboard
-    filbert.pythonRuntime.functions['mouse'] = this.mouse
-    filbert.pythonRuntime.functions['pause'] = this.pause
-    filbert.pythonRuntime.functions['set_subject_nr'] = this.set_subject_nr
-    filbert.pythonRuntime.functions['sometimes'] = this.sometimes
-    filbert.pythonRuntime.functions['synth'] = this.synth
-    filbert.pythonRuntime.functions['xy_circle'] = this.xy_circle
-    filbert.pythonRuntime.functions['xy_distance'] = this.xy_distance
-    filbert.pythonRuntime.functions['xy_from_polar'] = this.xy_from_polar
-    filbert.pythonRuntime.functions['xy_grid'] = this.xy_grid
-    filbert.pythonRuntime.functions['xy_random'] = this.xy_random
-    filbert.pythonRuntime.functions['xy_to_polar'] = this.xy_to_polar
+    filbert.pythonRuntime.functions.reset_feedback = this._runner._experiment.reset_feedback
+    filbert.pythonRuntime.functions.set_subject_nr = this._runner._experiment.set_subject
+    filbert.pythonRuntime.functions.canvas = this.canvas
+    filbert.pythonRuntime.functions.copy_sketchpad = this.copy_sketchpad
+    filbert.pythonRuntime.functions.keyboard = this.keyboard
+    filbert.pythonRuntime.functions.mouse = this.mouse
+    filbert.pythonRuntime.functions.pause = this.pause
+    filbert.pythonRuntime.functions.set_subject_nr = this.set_subject_nr
+    filbert.pythonRuntime.functions.sometimes = this.sometimes
+    filbert.pythonRuntime.functions.synth = this.synth
+    filbert.pythonRuntime.functions.xy_circle = this.xy_circle
+    filbert.pythonRuntime.functions.xy_distance = this.xy_distance
+    filbert.pythonRuntime.functions.xy_from_polar = this.xy_from_polar
+    filbert.pythonRuntime.functions.xy_grid = this.xy_grid
+    filbert.pythonRuntime.functions.xy_random = this.xy_random
+    filbert.pythonRuntime.functions.xy_to_polar = this.xy_to_polar
   }
 
   /** Import 'canvas' function for osweb script. */

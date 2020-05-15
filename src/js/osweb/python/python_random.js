@@ -14,9 +14,9 @@ export default class PythonRandom {
   /** Initialization phase of the python_library class. */
   _initialize () {
     // Insert math library methods into the python interpreter.
-    filbert.pythonRuntime.imports['random'] = {}
-    filbert.pythonRuntime.imports['random']['random'] = this.random
-    filbert.pythonRuntime.imports['random']['shuffle'] = this.shuffle
+    filbert.pythonRuntime.imports.random = {}
+    filbert.pythonRuntime.imports.random.random = this.random
+    filbert.pythonRuntime.imports.random.shuffle = this.shuffle
   }
 
   /** Import 'Random' function for osweb script. */
@@ -27,7 +27,7 @@ export default class PythonRandom {
   /** Import 'Shuffle' function for osweb script. */
   shuffle (x, random) {
     // Fisher-Yates (aka Knuth) Shuffle.
-    var currentIndex = x.length, temporaryValue, randomIndex
+    var currentIndex = x.length; var temporaryValue; var randomIndex
 
     // While there remain elements to shuffle...
     while (currentIndex !== 0) {

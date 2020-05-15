@@ -117,9 +117,10 @@ export default class Experiment extends Item {
       var l = this._source.shift()
       while (l != null) {
         // Set the processing of the next line.
-        var get_next = true
+        const get_next = true
+        // eslint-disable-next-line no-unused-vars
+        let cmd, args, kwargs
         try {
-          var cmd, args, kwargs;
           // Split the single line into a set of tokens.
           [cmd, args, kwargs] = this._runner._syntax.parse_cmd(l)
         } catch (e) {
@@ -175,35 +176,35 @@ export default class Experiment extends Item {
 
     // Runs the experiment.
     switch (this._status) {
-      case constants.STATUS_INITIALIZE:
-        // Adjust the status of the item.
-        this._status = constants.STATUS_FINALIZE
+    case constants.STATUS_INITIALIZE:
+      // Adjust the status of the item.
+      this._status = constants.STATUS_FINALIZE
 
-        // Save the date and time, and the version of OpenSesame
-        this.vars.datetime = new Date().toString()
-        this.vars.opensesame_version = VERSION_NUMBER
-        this.vars.opensesame_codename = VERSION_NAME
-        this.init_clock()
-        this.init_display()
-        this.reset_feedback()
+      // Save the date and time, and the version of OpenSesame
+      this.vars.datetime = new Date().toString()
+      this.vars.opensesame_version = VERSION_NUMBER
+      this.vars.opensesame_codename = VERSION_NAME
+      this.init_clock()
+      this.init_display()
+      this.reset_feedback()
 
-        // Add closing message to debug system.
-        this._runner._debugger.addMessage('experiment.run(): experiment started at ' + new Date().toUTCString())
+      // Add closing message to debug system.
+      this._runner._debugger.addMessage('experiment.run(): experiment started at ' + new Date().toUTCString())
 
-        if (this._runner._itemStore._items[this.vars.start] !== null) {
-          this._runner._itemStack.clear()
-          this._runner._itemStore.prepare(this.vars.start, this)
-        } else {
-          this._runner._debugger.addError('Could not find the item that is the entry point of the experiment: ' + this.vars.start)
-        }
-        break
-      case constants.STATUS_FINALIZE:
-        // Add closing message to debug system.
-        this._runner._debugger.addMessage('experiment.run(): experiment finished at ' + new Date().toUTCString())
+      if (this._runner._itemStore._items[this.vars.start] !== null) {
+        this._runner._itemStack.clear()
+        this._runner._itemStore.prepare(this.vars.start, this)
+      } else {
+        this._runner._debugger.addError('Could not find the item that is the entry point of the experiment: ' + this.vars.start)
+      }
+      break
+    case constants.STATUS_FINALIZE:
+      // Add closing message to debug system.
+      this._runner._debugger.addMessage('experiment.run(): experiment finished at ' + new Date().toUTCString())
 
-        // Complete the run process.
-        this.end()
-        break
+      // Complete the run process.
+      this.end()
+      break
     }
   }
 

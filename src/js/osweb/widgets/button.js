@@ -17,11 +17,11 @@ export default class ButtonWidget extends Widget {
     super(form, properties)
 
     // Set the class public properties.
-    this.center = (typeof properties['center'] !== 'undefined') ? (properties['center'] === 'yes') : true
-    this.frame = (typeof properties['frame'] !== 'undefined') ? (properties['frame'] === 'yes') : true
-    this.text = properties['text']
+    this.center = (typeof properties.center !== 'undefined') ? (properties.center === 'yes') : true
+    this.frame = (typeof properties.frame !== 'undefined') ? (properties.frame === 'yes') : true
+    this.text = properties.text
     this.type = 'button'
-    this.var = (typeof properties['var'] !== 'undefined') ? properties['var'] : this.var
+    this.var = (typeof properties.var !== 'undefined') ? properties.var : this.var
 
     // Set the current value of the variable to false (not pressed).
     this.set_var(false, this.var)

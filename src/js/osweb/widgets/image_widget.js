@@ -15,9 +15,9 @@ export default class ImageWidget extends Widget {
     super(form)
 
     // Set the class public properties.
-    this.adjust = (typeof properties['adjust'] !== 'undefined') ? (properties['adjust'] === 'true') : true
-    this.frame = (typeof properties['frame'] !== 'undefined') ? (properties['frame'] === 'yes') : false
-    this.path = (typeof properties['path'] !== 'undefined') ? properties['path'] : null
+    this.adjust = (typeof properties.adjust !== 'undefined') ? (properties.adjust === 'true') : true
+    this.frame = (typeof properties.frame !== 'undefined') ? (properties.frame === 'yes') : false
+    this.path = (typeof properties.path !== 'undefined') ? properties.path : null
     this.type = 'image'
   }
 

@@ -12,7 +12,7 @@ export default class VarStore {
     this._ignored_properties = [
       '_item', '_parent', '_bypass_proxy', '_ignored_properties'
     ]
-  };
+  }
 
   /**
    * Get the value of a variable from the store (or thje parent store).
@@ -66,8 +66,8 @@ export default class VarStore {
    * @return {Array} - Array containing names of all variables.
    */
   inspect () {
-    let variables = []
-    for (let variable in this) {
+    const variables = []
+    for (const variable in this) {
       if (this._ignored_properties.includes(variable)) continue
       variables.push(variable)
     }
@@ -78,8 +78,8 @@ export default class VarStore {
    * @return {Array} - Array containing name and values of all variables.
    */
   items () {
-    let pairs = {}
-    for (let variable of this.inspect()) {
+    const pairs = {}
+    for (const variable of this.inspect()) {
       pairs[variable] = this[variable]
     }
     return pairs
@@ -118,7 +118,7 @@ export default class VarStore {
    */
   clear (preserve) {
     preserve = (typeof preserve === 'undefined') ? [] : preserve
-    for (let variable of this.inspect()) {
+    for (const variable of this.inspect()) {
       if (preserve.includes(variable)) continue
       this.unset(variable)
     }

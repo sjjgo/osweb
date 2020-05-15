@@ -47,11 +47,11 @@ export default class TouchResponse extends MouseResponse {
     super.process_response_mouseclick(retval)
     // Calulate the row, column and cell.
     this.col = Math.floor(
-        (this.experiment.vars.cursor_x + this.experiment.vars.width / 2) /
+      (this.experiment.vars.cursor_x + this.experiment.vars.width / 2) /
         (this.experiment.vars.width / this.vars._ncol)
     )
     this.row = Math.floor(
-        (this.experiment.vars.cursor_y + this.experiment.vars.height / 2) /
+      (this.experiment.vars.cursor_y + this.experiment.vars.height / 2) /
         (this.experiment.vars.height / this.vars._nrow)
     )
     this.cell = this.row * this.vars._ncol + this.col + 1

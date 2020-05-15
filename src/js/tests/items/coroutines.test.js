@@ -1,3 +1,4 @@
+/* eslint-disable no-tabs */
 // import Syntax from '../../osweb/classes/syntax'
 // import PythonParser from '../../osweb/python/python'
 // import Experiment from '../../osweb/items/experiment'

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const OpenSesame = {
   API: 2,
   OpenSesame: '3.1.6',

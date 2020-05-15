@@ -1,3 +1,4 @@
+/* eslint-disable no-tabs */
 export const osexpString = `---
 API: 2
 OpenSesame: 3.1.4

@@ -13,11 +13,11 @@ export default class RatingScaleWidget extends Widget {
     super(form)
 
     // Set the class public properties.
-    this.click_accepts = (typeof properties['click_accepts'] !== 'undefined') ? (properties['click_accepts'] === 'yes') : false
-    this.default = (typeof properties['default'] !== 'undefined') ? properties['default'] : null
-    this.orientation = (typeof properties['orientation'] !== 'undefined') ? properties['orientation'] : 'horizontal'
-    this.nodes = (typeof properties['nodes'] !== 'undefined') ? properties['nodes'] : '5'
-    this.var = (typeof properties['var'] !== 'undefined') ? properties['var'] : null
+    this.click_accepts = (typeof properties.click_accepts !== 'undefined') ? (properties.click_accepts === 'yes') : false
+    this.default = (typeof properties.default !== 'undefined') ? properties.default : null
+    this.orientation = (typeof properties.orientation !== 'undefined') ? properties.orientation : 'horizontal'
+    this.nodes = (typeof properties.nodes !== 'undefined') ? properties.nodes : '5'
+    this.var = (typeof properties.var !== 'undefined') ? properties.var : null
     this.type = 'rating_scale'
 
     // Set the class private properties.
@@ -57,7 +57,7 @@ export default class RatingScaleWidget extends Widget {
   _drawBorder (x, y, width, height) {
     // Create the rectangle element.
     var rectangle = new Graphics()
-    rectangle.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme['gray'].backgroundColor), 1)
+    rectangle.lineStyle(1, this.form._canvas._styles._convertColorValue(this.form._themes.theme.gray.backgroundColor), 1)
     rectangle.drawRect(x, y, width, height)
     rectangle.x = 0
     rectangle.y = 0
@@ -175,7 +175,7 @@ export default class RatingScaleWidget extends Widget {
     // Set the default positions.
     var cx = this._container._width / 2
     var cy = this._container._height / 2
-    var _h = this.form._themes.theme['gray'].box_size
+    var _h = this.form._themes.theme.gray.box_size
 
     // Define horizontal or vertical positioning.
     if (this.orientation === 'horizontal') {

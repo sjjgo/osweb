@@ -14,12 +14,12 @@ export default class CheckBoxWidget extends Widget {
     super(form)
 
     // Set the class public properties.
-    this.checked = (typeof properties['checked'] !== 'undefined') ? (properties['checked'] === 'yes') : false
-    this.click_accepts = (typeof properties['click_accepts'] !== 'undefined') ? (properties['click_accepts'] === 'yes') : false
-    this.frame = (typeof properties['frame'] !== 'undefined') ? (properties['frame'] === 'yes') : false
-    this.group = (typeof properties['group'] !== 'undefined') ? properties['group'] : null
-    this.text = (typeof properties['text'] !== 'undefined') ? properties['text'] : ''
-    this.var = (typeof properties['var'] !== 'undefined') ? properties['var'] : null
+    this.checked = (typeof properties.checked !== 'undefined') ? (properties.checked === 'yes') : false
+    this.click_accepts = (typeof properties.click_accepts !== 'undefined') ? (properties.click_accepts === 'yes') : false
+    this.frame = (typeof properties.frame !== 'undefined') ? (properties.frame === 'yes') : false
+    this.group = (typeof properties.group !== 'undefined') ? properties.group : null
+    this.text = (typeof properties.text !== 'undefined') ? properties.text : ''
+    this.var = (typeof properties.var !== 'undefined') ? properties.var : null
     this.type = 'checkbox'
 
     // Set the class private properties.
