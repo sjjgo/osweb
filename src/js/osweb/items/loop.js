@@ -72,7 +72,7 @@ export default class Loop extends Item {
       if (isArray(el)) {
         return this._eval_args(el)
       } else {
-        return this._runner._syntax.eval_text(el)
+        return this._runner._syntax.remove_quotes(this._runner._syntax.eval_text(el))
       }
     })
   }
