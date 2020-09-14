@@ -33,8 +33,9 @@ export default class GenericResponse extends Item {
   /** Implements the complete phase of the general response item. */
   _complete () {
     // Check if a timeout has occured which must be treaded as a response.
-    if ((typeof this.vars.timeout !== 'undefined') &&
-      ((this.experiment._runner._events._timeStamp - this.experiment.vars.get('time_' + this.name)) > this.vars.timeout)) {
+    let timeout = this.vars.get('timeout')
+    if ((typeof timeout !== 'undefined') &&
+      ((this.experiment._runner._events._timeStamp - this.experiment.vars.get('time_' + this.name)) > timeout)) {
       // Process the timeout none response.
       this.process_response_timeout()
     }
@@ -154,15 +155,9 @@ export default class GenericResponse extends Item {
 
   /** Prepare the system for a timeout. */
   prepare_timeout () {
-    // Prepare the timeout.
-    if (this.vars.get('timeout') !== null) {
-      if (typeof this.vars.timeout === 'number') {
-        // Prepare a duration in milliseconds
-        this._timeout = this.vars.timeout
-      } else {
-        this._timeout = -1
-      }
-    }
+    let timeout = this.vars.get('timeout')
+    if (timeout === null) return
+    this._timeout = (typeof timeout === 'number') ? timeout : -1
   }
 
   /** Select the type of stimulus response processing. */
