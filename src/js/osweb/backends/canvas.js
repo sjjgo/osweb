@@ -893,6 +893,9 @@ export default class Canvas {
    * @param {Object} styleArgs - Optional styling argument for the element.
    */
   text (txt, center, x, y, html, styleArgs) {
+    // Newlines are not dealt with correctly, so we convert them to <br />
+    // tags, which results in the same behavior as the desktop.
+    txt = txt.replace('\n', '<br />')
     // Get the style
     const elementStyle = this._getStyle(styleArgs)
 
