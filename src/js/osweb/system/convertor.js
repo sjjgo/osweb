@@ -92,10 +92,10 @@ export default class Convertor {
         }
 
         // Set the matrix with the proper values.
-        if (this.item.matrix[items[1]] === undefined) {
-          this.item.matrix[items[1]] = {}
+        if (this.item.orig_matrix[items[1]] === undefined) {
+          this.item.orig_matrix[items[1]] = {}
         }
-        this.item.matrix[items[1]][items[2]] = value
+        this.item.orig_matrix[items[1]][items[2]] = value
         break
       case 'widget':
         // Remove the widget token from the list.

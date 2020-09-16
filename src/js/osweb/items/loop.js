@@ -38,7 +38,6 @@ export default class Loop extends Item {
     // Definition of public properties.
     this.description = 'Repeatedly runs another item'
     this.matrix = null
-    this._cycles = []
 
     // Definition of private properties.
     this._break_if = ''
@@ -79,7 +78,7 @@ export default class Loop extends Item {
 
   /** Reset all item variables to their default value. */
   reset () {
-    this.matrix = []
+    this.orig_matrix = []
     this.vars.cycles = 1
     this.vars.repeat = 1
     this.vars.skip = 0
@@ -87,7 +86,6 @@ export default class Loop extends Item {
     this.vars.order = 'random'
     this.vars.item = ''
     this.vars.break_if = 'never'
-    this._cycles = []
     this._index = 0
     this._operations = []
     this._initialized = false
@@ -134,52 +132,41 @@ export default class Loop extends Item {
                 value = value.body[0]
               }
             }
-            if (this.matrix[cycle] === undefined) {
-              this.matrix[cycle] = {}
+            if (this.orig_matrix[cycle] === undefined) {
+              this.orig_matrix[cycle] = {}
             }
-            this.matrix[cycle][name] = value
+            this.orig_matrix[cycle][name] = value
             break
           case 'fullfactorial':
             this._operations.push([fullfactorial, []])
-            // this.matrix = fullfactorial(this.matrix)
             break
           case 'shuffle':
             this._operations.push([shuffleVert, [params]])
-            // this.matrix = shuffleVert(this.matrix, params)
             break
           case 'shuffle_horiz':
             this._operations.push([shuffleHoriz, [params]])
-            // this.matrix = shuffleHoriz(this.matrix, params)
             break
           case 'slice':
             this._operations.push([(matrix, args) => matrix.slice(...args), [params]])
-            // this.matrix = this.matrix.slice(...params)
             break
           case 'sort':
             this._operations.push([sortCol, [...params]])
-            // this.matrix = sortCol(this.matrix, ...params)
             break
           case 'sortby':
             this._operations.push([sortBy, [params]])
-            // this.matrix = sortBy(this.matrix, params)
             break
           case 'reverse':
             this._operations.push([reverseRows, [params]])
-            // this.matrix = reverseRows(this.matrix, params)
             break
           case 'roll':
             this._operations.push([roll, [...params]])
-            // this.matrix = roll(this.matrix, ...params)
             break
           case 'weight':
             this._operations.push([weight, [...params]])
-            // this.matrix = weight(this.matrix, ...params)
             break
           }
         }
       }
-      // Set the number of cycles to the length of the generated matrix
-      this.vars.cycles = this.matrix.length
     }
   }
 
@@ -235,11 +222,11 @@ export default class Loop extends Item {
     if (!this._initialized) {
       // Perform the operations
       this.matrix = this._operations.reduce((mtrx, [func, args]) =>
-        func(mtrx, ...this._eval_args(args)), this.matrix)
+        func(mtrx, ...this._eval_args(args)), this.orig_matrix)
       // Set the number of cycles to the length of the generated matrix
       this.vars.cycles = this.matrix.length
-
       // Walk through all complete repeats
+      this._cycles = []
       const wholeRepeats = Math.floor(this.vars.get('repeat'))
       for (let j = 0; j < wholeRepeats; j++) {
         for (let i = 0; i < this.vars.cycles; i++) {
@@ -301,6 +288,7 @@ export default class Loop extends Item {
 
         if (this.python_workspace._eval(breakIf) === true) {
           this._complete()
+          this._initialized = false
           return
         }
       }
