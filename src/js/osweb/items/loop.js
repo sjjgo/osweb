@@ -218,47 +218,47 @@ export default class Loop extends Item {
   /** Implements the run phase of an item. */
   run () {
     super.run()
-
     if (!this._initialized) {
+      // The first step is to create an array of cycle indices (`cycles`). We
+      // first add the integer part of the repeats to this array, which results
+      // in a `cycles` array with a length that is a multiple of the original
+      // matrix length.
+      let cycles = []
+      const wholeRepeats = Math.floor(this.vars.repeat)
+      for (let j = 0; j < wholeRepeats; j++) {
+        for (let i in this.orig_matrix) {
+          cycles.push(i)
+        }
+      }
+      // Next, we add the non-integer part of the repeats to the cycles array.
+      const partialRepeats = this.vars.repeat - wholeRepeats
+      if (partialRepeats > 0) {
+        // Get an array of all cycles indices. (This syntax is like a range().)
+        // For randomly ordered loops, shuffle the order of the indices.
+        // This makes sure that the next step of determining the repeatcycles
+        // is a 'random selection without replacement'
+        let allCycles = [...Array(this.orig_matrix.length).keys()]
+        if (this.vars.order === 'random') {
+          allCycles = shuffle(allCycles)
+        }
+        // Add the remaining cycles to the cycles array
+        const remainder = Math.floor(this.orig_matrix.length * partialRepeats)
+        cycles = [...cycles, ...allCycles.splice(0, remainder)]
+      }
+      if (this.vars.order === 'random') {
+        cycles = shuffle(cycles)
+      }
+      // Create a live matrix that takes into account the repeats and the
+      // shuffles.
+      this.matrix = []
+      this._cycles = []
+      for (let k in cycles) {
+        this.matrix.push(this.orig_matrix[cycles[k]])
+        this._cycles.push(k)
+      }
       // Perform the operations
       this.matrix = this._operations.reduce((mtrx, [func, args]) =>
-        func(mtrx, ...this._eval_args(args)), this.orig_matrix)
-      // Set the number of cycles to the length of the generated matrix
-      this.vars.cycles = this.matrix.length
-      // Walk through all complete repeats
-      this._cycles = []
-      const wholeRepeats = Math.floor(this.vars.get('repeat'))
-      for (let j = 0; j < wholeRepeats; j++) {
-        for (let i = 0; i < this.vars.cycles; i++) {
-          this._cycles.push(i)
-        }
-      }
-
-      // Add the leftover repeats.
-      const partialRepeats = this.vars.get('repeat') - wholeRepeats
-      if (partialRepeats > 0) {
-        // Get the amount of cycles to still repeat
-        const remainder = Math.floor(this.vars.cycles * partialRepeats)
-
-        let cycles = [...Array(this.vars.cycles).keys()]
-
-        if (this.vars.get('order') === 'random') {
-          // For randomly ordered loops, shuffle the order of the pool
-          // This makes sure that the next step of determining the repeatcycles
-          // is a 'random selection without replacement'
-          cycles = shuffle(cycles)
-        }
-        // Get the required amount of cycles to repeat from the pool.
-        let repeatCycles = cycles.splice(0, remainder)
-        // Add these cycles to the original cycles array
-        this._cycles = [...this._cycles, ...repeatCycles]
-      }
-
-      // Shuffle everything!.
-      if (this.vars.get('order') === 'random') {
-        this._cycles = shuffle(this._cycles)
-      }
-
+        func(mtrx, ...this._eval_args(args)), this.matrix)
       this._initialized = true
     }
 
