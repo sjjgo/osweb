@@ -97,7 +97,9 @@ export default class Sequence extends Item {
             var item = tokens[1]
             var cond = 'always'
             if (tokens.length > 2) {
-              cond = tokens[2]
+              cond = this.syntax.strip_slashes(
+                this.syntax.remove_quotes(tokens[2])
+              )
             }
             // Push the item and condition definition to the items list.
             this.items.push({
