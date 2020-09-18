@@ -260,47 +260,44 @@ export default class Loop extends Item {
       this.matrix = this._operations.reduce((mtrx, [func, args]) =>
         func(mtrx, ...this._eval_args(args)), this.matrix)
       this._initialized = true
-    }
-
-    const break_if_val = this.vars.get('break_if')
-    this._break_if = ['never', ''].includes(break_if_val)
-      ? null
-      : this.syntax.compile_cond(break_if_val)
-
+      this._index = null
+    } // end init
     // Check if if the cycle must be repeated.
-    if (this.experiment.vars.repeat_cycle === 1 && isNumber(this._index)) {
+    if (this.experiment.vars.repeat_cycle === 1 && this._index !== null) {
       this._runner._debugger.msg('Repeating cycle: ' + this._index)
       this._cycles.push(this._index)
       if (this.vars.get('order') === 'random') {
         this._cycles = shuffle(this._cycles)
       }
-      this.experiment.vars.repeat_cycle = 0
     }
-
-    if (this._cycles.length > 0) {
-      this._index = this._cycles.shift()
-      this.apply_cycle(this._index)
-
-      if (this._break_if !== null) {
-        this.python_workspace['this'] = this
-
-        const breakIf = this.syntax.eval_text(this._break_if, null, true)
-
-        if (this.python_workspace._eval(breakIf) === true) {
-          this._complete()
-          this._initialized = false
-          return
-        }
-      }
-
-      if (this._runner._itemStore._items[this.vars.item].type === 'sequence') {
-        this._runner._itemStore.prepare(this.vars.item, this)
-      } else {
-        this._runner._itemStore.execute(this.vars.item, this)
-      }
-    } else {
-      // Break the loop.
+    // When the loop is finished
+    if (this._cycles.length == 0) {
       this._complete()
+      return
+    }
+    // Prepare for the current cycle
+    this._index = this._cycles.shift()
+    this.apply_cycle(this._index)
+    this.experiment.vars.repeat_cycle = 0
+    // Process the break-if statement
+    const break_if_val = this.vars.get('break_if')
+    this._break_if = ['never', ''].includes(break_if_val)
+      ? null
+      : this.syntax.compile_cond(break_if_val)
+    if (this._break_if !== null) {
+      this.python_workspace['this'] = this
+      const breakIf = this.syntax.eval_text(this._break_if, null, true)
+      if (this.python_workspace._eval(breakIf) === true) {
+        this._complete()
+        this._initialized = false
+        return
+      }
+    }
+    // Execute the item to run
+    if (this._runner._itemStore._items[this.vars.item].type === 'sequence') {
+      this._runner._itemStore.prepare(this.vars.item, this)
+    } else {
+      this._runner._itemStore.execute(this.vars.item, this)
     }
   }
 }
