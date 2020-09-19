@@ -119,17 +119,12 @@ export default class Syntax {
     // Try to convert text to a number. If this succeeds return it.
     if ((text !== '') && !isNaN(toNumber(text))) return toNumber(text)
     text = this.escapeBrackets(text)
-    /** The replacer function detects variable entries in the passed text
-    and replaces them with variable values as found in OpenSesame's var store */
-    const result = text.replace(/\[(\w+|=.+?)\]/g, (match, content, offset, string) => {
-      // Check if contents of [] start with an =. In this case they should be
-      // evaluated as a Python statement
-      content = this.unescapeBrackets(content)
-      if (content[0] === '=') {
-        // Convert python statement to ast tree and run it.
-        const ast = this._runner._pythonParser._parse(content.substring(1, content.length))
-        return this._runner._pythonParser._run_statement(ast)
-      } else {
+    // First, parse the regular variables. These should be parsed recursively
+    // to allow for [[nested]variables].
+    const reNormal = /\[(?!=)(\w+?)\]/g
+    while (text.search(reNormal) >= 0) {
+      text = text.replace(reNormal, (match, content, offset, string) => {
+        content = this.unescapeBrackets(content)
         let value
         try {
           if ((typeof vars === 'undefined') || (vars === null) || (typeof vars[content] === 'undefined')) {
@@ -153,18 +148,27 @@ export default class Syntax {
         if (addQuotes === true) {
           // Temporary hack for string types.
           return isString(value) ? `"${value}"` : value
-        } else {
-          return value
         }
-      }
-    })
+        return value
+      })
+    }
+    // Next, parse the inline-Python defintions. Those should only be parsed
+    // once, not recursively, because they may contain literal [brackets]
+    const rePython = /\[=(.+?)\]/g
+    text = text.replace(rePython, (match, content, offset, string) => {
+        // Check if contents of [] start with an =. In this case they should be
+        // evaluated as a Python statement
+        content = this.unescapeBrackets(content)
+        const ast = this._runner._pythonParser._parse(content)
+        return this._runner._pythonParser._run_statement(ast)
+    })    
     // Try to convert the result to a number again. If this succeeds return it.
-    if (result !== '') {
-      const nr = toNumber(result)
+    if (text !== '') {
+      const nr = toNumber(text)
       if (!isNaN(nr)) return nr
     }
     // Check if content has additional quotes
-    return this.strip_slashes(this.unescapeBrackets(result))
+    return this.strip_slashes(this.unescapeBrackets(text))
   }
 
   /**

@@ -132,6 +132,8 @@ describe('Syntax', function () {
     tmpVarStore.width = 1024
     tmpVarStore.height = 768
     tmpVarStore.my_var99 = 99
+    tmpVarStore.nested = 'prefix'
+    tmpVarStore.prefixvar = 'a nested value'
 
     it('Should only parse real variables: \\\\[width] = \\[width] = [width]', function () {
       expect(syntax.eval_text(
@@ -184,6 +186,10 @@ describe('Syntax', function () {
     it('Should process multiple code blocks: w: [=1024], h: [=768]', function () {
       expect(syntax.eval_text(
         'w: [=1024], h: [=768]', tmpVarStore)).toBe('w: 1024, h: 768')
+    })
+    it('Should process nested variable definitions: [[nested]var]', function () {
+      expect(syntax.eval_text(
+        '[[nested]var]', tmpVarStore)).toBe('a nested value')
     })
   })
 
