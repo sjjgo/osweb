@@ -80,6 +80,10 @@ export default class AdvancedDelay extends Item {
   run () {
     super.run()
     this.set_item_onset(this.time())
-    this.sleep(this._duration)
+    if (this._duration > 0) {
+      this.sleep(this._duration)
+    } else {
+      this._complete()
+    }
   }
 }
