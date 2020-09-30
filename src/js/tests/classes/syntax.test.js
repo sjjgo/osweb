@@ -123,6 +123,44 @@ describe('Syntax', function () {
       }).toThrow()
     })
   })
+  
+  describe('dedent()', function () {
+    it('Should dedent dedentable script', function () {
+        expect(syntax.dedent(`	define sketchpad sketchpad
+		set duration "keypress"`)).toBe(`define sketchpad sketchpad
+	set duration "keypress"`)
+    })
+    it('Should not dedent non-dedentable script', function () {
+        expect(syntax.dedent(`define sketchpad sketchpad
+	set duration "keypress"`)).toBe(`define sketchpad sketchpad
+	set duration "keypress"`)
+    })
+  })
+  
+  describe('parse_multiline_vars()', function () {
+    const script = `__condition__
+[var] = "yes"
+__end__
+___run__
+x = 0
+print("This is Python code")
+__end__`
+    const script2 = `set description "Optionally repeat a cycle from a loop"
+__condition__
+[response] = "space"
+__end__
+`
+    let vars
+    it('Should parse multiple multine variables', function () {
+        vars = syntax.parse_multiline_vars(script)
+        expect(vars["condition"]).toBe('[var] = "yes"')
+        expect(vars["_run"]).toBe('x = 0\nprint("This is Python code")')
+    })
+    it('Should parse multine variables from a script', function () {
+        vars = syntax.parse_multiline_vars(script2)
+        expect(vars["condition"]).toBe('[response] = "space"')
+    })
+  })
 
   describe('eval_text()', function () {
     var tmpVarStore = new VarStore({

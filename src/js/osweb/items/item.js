@@ -121,11 +121,22 @@ export default class Item {
       }
     }
   }
+  
+  /**
+   * Parses multiline variables from a script
+   * @param {String} script - The definition script line to be parsed.
+   */
+  parse_multiline_vars (script) {
+    const vars = this.syntax.parse_multiline_vars(script)
+    for (const key in vars) {
+      this.vars.set(key, vars[key])
+    }
+  }
 
   /**
-     * Parses the item from a definition string.
-.    * @param {String} script - The definition script line to be parsed.
-     */
+   * Parses the item from a definition string.
+   * @param {String} script - The definition script line to be parsed.
+   */
   from_string (script) {
     // Parses the item from a definition string.
     this.variables = {}
@@ -134,6 +145,7 @@ export default class Item {
 
     // Split the string into an array of lines.
     if (script !== null) {
+      this.parse_multiline_vars(script)
       var lines = script.split('\n')
       for (var i = 0; i < lines.length; i++) {
         if ((lines[i] !== '') && (this.parse_variable(lines[i]) === false)) {

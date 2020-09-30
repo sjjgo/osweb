@@ -222,6 +222,39 @@ export default class Syntax {
     // return line.replace(/(?<!\\)\\(?=['"\\])/mg, '')
     return line.replace(/\\(?=['"])/mg, '').replace(/\\\\/mg, '\\')
   }
+  
+  /**
+   * Removes tab indentation from a script, if all lines are indented by a
+   * single tab.
+   * @param {String} script - A script
+   * @return {String} - A dedented script
+   */
+  dedent (script) {
+    const lines = script.split('\n')
+    let dedented = []
+    for (const line of lines) {
+      if (line[0] !== '\t') {
+        return script
+      }
+      dedented.push(line.slice(1))
+    }
+    return dedented.join('\n')
+  }
+  
+  /**
+   * Extracts all multineline variable definitions from an OpenSesame script
+   * @param {String} script - The OpenSesame script of an item
+   * @return {Array} - An array of key, value mappings
+   */
+  parse_multiline_vars (script) {
+    const pattern = /__(\w+)__\n(.*?)\n__end__/gms
+    let match
+    let vars = []
+    while ((match = pattern.exec(script)) !== null) {
+      vars[match[1]] = match[2]
+    }
+    return vars
+  }
 
   /**
    * Parses an instruction line of OpenSesame script
