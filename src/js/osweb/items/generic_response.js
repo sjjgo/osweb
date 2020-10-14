@@ -239,7 +239,6 @@ export default class GenericResponse extends Item {
     this.experiment.vars.set('response_' + this.name, this.experiment.vars.get('response'))
     this.experiment.vars.set('response_time_' + this.name, this.experiment.vars.get('response_time'))
     this.experiment._start_response_interval = null
-
     // But correctness information is only set for dedicated response items,
     // such as keyboard_response items, because otherwise we might confound the feedback
     if (this.process_feedback === true) {
@@ -262,7 +261,7 @@ export default class GenericResponse extends Item {
       this.experiment.vars.acc = this.experiment.vars.accuracy
       this.experiment.vars.average_response_time = Math.round(this.experiment.vars.total_response_time / this.experiment.vars.total_responses)
       this.experiment.vars.avg_rt = this.experiment.vars.average_response_time
-      this.experiment.vars.set('correct_' + this.name, this.vars.correct)
+      this.experiment.vars.set('correct_' + this.name, this.experiment.vars.correct)
     }
   }
 

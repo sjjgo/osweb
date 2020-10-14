@@ -21,11 +21,8 @@ export default class TouchResponse extends MouseResponse {
 
   /** Resets all item variables to their default value. */
   reset () {
-    // Inherited.
     super.reset()
     this.vars.set('allowed_responses', null)
-
-    // Resets all item variables to their default value.
     this.vars._ncol = 2
     this.vars._nrow = 1
   }
@@ -34,7 +31,6 @@ export default class TouchResponse extends MouseResponse {
   prepare () {
     // Temp hack
     this.experiment.vars.correct = -1
-
     // Inherited.
     super.prepare()
   }
@@ -44,7 +40,9 @@ export default class TouchResponse extends MouseResponse {
      * @param {Object} pRetval - The mouse response to process.
      */
   process_response_mouseclick (retval) {
-    super.process_response_mouseclick(retval)
+    this.experiment._start_response_interval = this.sri
+    this.experiment._end_response_interval = retval.rtTime
+    this.set_mouse_coordinates(retval.event.clientX, retval.event.clientY)
     // Calulate the row, column and cell.
     this.col = Math.floor(
       (this.experiment.vars.cursor_x + this.experiment.vars.width / 2) /
@@ -56,6 +54,7 @@ export default class TouchResponse extends MouseResponse {
     )
     this.cell = this.row * this.vars._ncol + this.col + 1
     this.experiment.vars.response = this.cell
-    this.synonyms = [this.experiment.vars.get('response')]
+    this.synonyms = [this.experiment.vars.get('response').toString()]
+    this.response_bookkeeping()
   }
 }
