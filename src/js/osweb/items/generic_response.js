@@ -61,12 +61,6 @@ export default class GenericResponse extends Item {
     }
   }
 
-  /** The auto responder method for simulated keyboard interaction. */
-  auto_responser () {}
-
-  /** The auto responder method for simulated mouse interaction. */
-  auto_responser_mouse () {}
-
   /** Prepare the list with allowed responses */
   prepare_allowed_responses () {
     // Prepare the allowed responses.
