@@ -13,17 +13,10 @@ export default class KeyboardResponse extends GenericResponse {
      * @param {String} script - The script containing the properties of the item.
      */
   constructor (experiment, name, script) {
-    // Inherited.
     super(experiment, name, script)
-
-    // Definition of public properties.
     this.description = 'Collects keyboard responses'
-
-    // Definition of private properties.
     this._flush = 'yes'
     this._keyboard = new Keyboard(this.experiment)
-
-    // Process the script.
     this.from_string(script)
   }
 

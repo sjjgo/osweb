@@ -278,9 +278,8 @@ export default class GenericResponse extends Item {
   prepare () {
     // Implements the prepare phase of the item.
     this.prepare_timeout()
-    this.prepare_allowed_responses()
     this.prepare_duration()
-
+    this.prepare_allowed_responses()
     // Inherited.
     super.prepare()
   }

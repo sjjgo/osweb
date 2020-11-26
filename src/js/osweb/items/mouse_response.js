@@ -13,18 +13,10 @@ export default class MouseResponse extends GenericResponse {
      * @param {String} script - The script containing the properties of the item.
      */
   constructor (experiment, name, script) {
-    // Inherited.
     super(experiment, name, script)
-
-    // Definition of public properties.
     this.description = 'Collects mouse responses'
     this.resp_codes = {}
-
-    // Definition of private properties.
     this._flush = 'yes'
-    this._mouse = new Mouse(this.experiment)
-
-    // Process the script.
     this.from_string(script)
   }
 
