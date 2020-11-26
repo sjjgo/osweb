@@ -25,7 +25,6 @@ export default class GenericResponse extends Item {
     this._timeout = -1
 
     // Create and set public properties.
-    this.auto_response = 'a'
     this.process_feedback = false
     this.synonyms = null
   }
@@ -127,24 +126,16 @@ export default class GenericResponse extends Item {
   prepare_duration_keypress () {
     // Prepare a keyboard duration.
     this._keyboard = new Keyboard(this.experiment)
-    if (this.experiment.auto_response === true) {
-      this._duration_func = this.auto_responder
-    } else {
-      var final_duration = (this._timeout !== -1) ? this._timeout : this._duration
-      this._keyboard._set_config(final_duration, this._allowed_responses)
-    }
+    var final_duration = (this._timeout !== -1) ? this._timeout : this._duration
+    this._keyboard._set_config(final_duration, this._allowed_responses)
   }
 
   /** Prepare the system for a mouseclick duration interval. */
   prepare_duration_mouseclick () {
     // Prepare a mouseclick duration.
     this._mouse = new Mouse(this.experiment)
-    if (this.experiment.auto_response === true) {
-      this._duration_func = this.auto_responder_mouse
-    } else {
-      var final_duration = (this._timeout !== -1) ? this._timeout : this._duration
-      this._mouse._set_config(final_duration, this._allowed_responses, false)
-    }
+    var final_duration = (this._timeout !== -1) ? this._timeout : this._duration
+    this._mouse._set_config(final_duration, this._allowed_responses, false)
   }
 
   /** Prepare the system for a timeout. */

@@ -39,7 +39,6 @@ export default class MouseResponse extends GenericResponse {
 
   /** Resets all item variables to their default value. */
   reset () {
-    this.auto_response = 1
     this.process_feedback = true
     this.resp_codes = {}
     this.resp_codes['0'] = 'timeout'

@@ -29,7 +29,6 @@ export default class KeyboardResponse extends GenericResponse {
 
   /** Resets all item variables to their default value. */
   reset () {
-    this.auto_response = 'space'
     this.process_feedback = true
     this.vars.allowed_responses = null
     this.vars.correct_response = null
