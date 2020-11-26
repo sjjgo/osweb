@@ -40,6 +40,11 @@ export default class Sketchpad extends GenericResponse {
     this.elements = []
     this.vars.duration = 'keypress'
   }
+  
+  /** Process a time out response. */
+  process_response_timeout () {
+    // Nothing happens
+  }
 
   /**
      * Parse a definition string and retrieve all properties of the item.
