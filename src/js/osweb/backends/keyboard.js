@@ -17,7 +17,7 @@ export default class Keyboard {
     this._timeOut = (typeof timeOut === 'undefined') ? null : timeOut // Duration in millisecond for time-out.
 
     // Set constant properties.
-    this._SYNONIEM_MAP = [
+    this._SYNONYM_MAP = [
       ['space', ' ', 'SPACE'],
       ['"', 'quotedbl', 'QUOTEDBL'],
       ['!', 'exclaim', 'EXCLAIM'],
@@ -157,11 +157,11 @@ export default class Keyboard {
   }
 
   /**
-   * Convert all response values to their default values (remove synoniems).
+   * Convert all response values to their default values (remove synonyms).
    * @param {Array} responses - A list of response values.
    * @return {Array} - List of default values for the given responses.
    */
-  _get_default_from_synoniem (responses) {
+  _get_default_from_synonym (responses) {
     const defaults = []
     let synonyms
     for (let i = 0; i < responses.length; i++) {
@@ -186,16 +186,16 @@ export default class Keyboard {
   }
 
   /**
-   * Convert a response value to its default value (remove synoniem).
+   * Convert a response value to its default value (remove synonym).
    * @param {String} button - A response.
    * @return {String|Null} - Default value of the response.
    */
   _synonyms (button) {
     if (typeof button !== 'undefined') {
-      for (let i = 0; i < this._SYNONIEM_MAP.length; i++) {
-        for (let j = 0; j < this._SYNONIEM_MAP[i].length; j++) {
-          if (this._SYNONIEM_MAP[i][j] === button) {
-            return this._SYNONIEM_MAP[i]
+      for (let i = 0; i < this._SYNONYM_MAP.length; i++) {
+        for (let j = 0; j < this._SYNONYM_MAP[i].length; j++) {
+          if (this._SYNONYM_MAP[i][j] === button) {
+            return this._SYNONYM_MAP[i]
           }
         }
       }

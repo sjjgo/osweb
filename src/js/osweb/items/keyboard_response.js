@@ -69,7 +69,7 @@ export default class KeyboardResponse extends GenericResponse {
       const keypress = this.experiment._runner._events._processKeyboardEvent(event, 1)
       let allowed_responses = 'all'
       if (this.vars.get('allowed_responses')) {
-        allowed_responses = this._keyboard._get_default_from_synoniem(
+        allowed_responses = this._keyboard._get_default_from_synonym(
           this.vars.get('allowed_responses').split(';').map(key => key.trim())
         )
       }

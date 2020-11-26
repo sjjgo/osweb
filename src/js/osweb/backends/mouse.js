@@ -19,7 +19,7 @@ export default class Mouse {
     this._visible = (typeof visible === 'undefined') ? false : visible
 
     // Set constant properties.
-    this._SYNONIEM_MAP = [
+    this._SYNONYM_MAP = [
       ['1', 'left_button'],
       ['2', 'middle_button'],
       ['3', 'right_button'],
@@ -29,16 +29,16 @@ export default class Mouse {
   }
 
   /**
-   * Convert all response values to their default values (remove synoniems).
+   * Convert all response values to their default values (remove synonyms).
    * @param {Array} responses - A list of response values.
    * @return {Array} - List of default values for the given responses.
    */
-  _get_default_from_synoniem (responses) {
-    // Return the default synoniem value from a response.
+  _get_default_from_synonym (responses) {
+    // Return the default synonym value from a response.
     var defaults = []
     for (var i = 0; i < responses.length; i++) {
-      var synoniem = this._synonyms(responses[i])
-      defaults.push(synoniem[0])
+      var synonym = this._synonyms(responses[i])
+      defaults.push(synonym[0])
     }
     return defaults
   }
@@ -57,16 +57,16 @@ export default class Mouse {
   }
 
   /**
-   * Convert a response value to its default value (remove synoniem).
+   * Convert a response value to its default value (remove synonym).
    * @param {String} button - A response.
    * @return {String|Null} - Default value of the response or null if none.
    */
   _synonyms (button) {
     if (typeof button !== 'undefined') {
-      for (var i = 0; i < this._SYNONIEM_MAP.length; i++) {
-        for (var j = 0; j < this._SYNONIEM_MAP[i].length; j++) {
-          if (this._SYNONIEM_MAP[i][j] === button) {
-            return this._SYNONIEM_MAP[i]
+      for (var i = 0; i < this._SYNONYM_MAP.length; i++) {
+        for (var j = 0; j < this._SYNONYM_MAP[i].length; j++) {
+          if (this._SYNONYM_MAP[i][j] === button) {
+            return this._SYNONYM_MAP[i]
           }
         }
       }

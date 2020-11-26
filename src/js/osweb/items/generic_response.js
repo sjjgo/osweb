@@ -75,10 +75,10 @@ export default class GenericResponse extends Item {
           : item).filter(Boolean)
       if (this.vars.duration === 'keypress') {
         // this._allowed_responses = allowed_responses;
-        this._allowed_responses = this._keyboard._get_default_from_synoniem(allowed_responses)
+        this._allowed_responses = this._keyboard._get_default_from_synonym(allowed_responses)
       } else if (this.vars.duration === 'mouseclick') {
         // For mouse responses, we don't check if the allowed responses make sense.
-        this._allowed_responses = this._mouse._get_default_from_synoniem(allowed_responses)
+        this._allowed_responses = this._mouse._get_default_from_synonym(allowed_responses)
       }
 
       // If allowed responses are provided, the list should not be empty.
