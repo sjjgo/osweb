@@ -20,6 +20,7 @@ export default class Canvas {
     this._height = this.experiment._runner._renderer.height // Height of the HTML canvas used for drawing.
     this._styles = new Styles() // The style container.
     this._width = this.experiment._runner._renderer.width // Width of the HTML canvas used for drawing.
+    this._textures = []
   }
 
   /**
@@ -570,7 +571,9 @@ export default class Canvas {
     ctx.putImageData(px, 0, 0)
 
     // Retrieve the image from the recourses
-    var sprite = new Sprite(Texture.from(canvas))
+    const texture = Texture.from(canvas)
+    this._textures.push(texture)
+    var sprite = new Sprite(texture)
 
     // Position the image.
     sprite.x = x - (size / 2)
@@ -619,7 +622,9 @@ export default class Canvas {
     const ctx = canvas.getContext('2d')
     ctx.drawImage(img, 0, 0)
 
-    const sprite = new Sprite(Texture.from(canvas))
+    const texture = Texture.from(canvas)
+    this._textures.push(texture)
+    const sprite = new Sprite(texture)
 
     // Scale the image.
     sprite.scale.x = scale
@@ -766,7 +771,9 @@ export default class Canvas {
     ctx.putImageData(px, 0, 0)
 
     // Retrieve the image from the recourses
-    var sprite = new Sprite(Texture.from(canvas))
+    const texture = Texture.from(canvas)
+    this._textures.push(texture)
+    var sprite = new Sprite(texture)
 
     // Position the image.
     sprite.x = x - (size / 2)
@@ -874,13 +881,13 @@ export default class Canvas {
       console.error(e)
     }
     this.experiment._runner._renderer.render(this._container)
-
-    // Return the current time.
-    if (experiment != null) {
-      return experiment.clock.time()
-    } else {
-      return null
+    const showTime = (experiment != null ? experiment.clock.time() : null)
+    let texture
+    while (this._textures.length > 0) {
+      texture = this._textures.pop()
+      texture.destroy(true)
     }
+    return showTime
   }
 
   /**
