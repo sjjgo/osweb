@@ -369,6 +369,11 @@ export default class Canvas {
     for (var i = this._container.children.length - 1; i >= 0; i--) {
       this._container.removeChild(this._container.children[i])
     }
+    let texture
+    while (this._textures.length > 0) {
+      texture = this._textures.pop()
+      texture.destroy(true)
+    }
   }
 
   /**
@@ -881,13 +886,7 @@ export default class Canvas {
       console.error(e)
     }
     this.experiment._runner._renderer.render(this._container)
-    const showTime = (experiment != null ? experiment.clock.time() : null)
-    let texture
-    while (this._textures.length > 0) {
-      texture = this._textures.pop()
-      texture.destroy(true)
-    }
-    return showTime
+    return (experiment != null ? experiment.clock.time() : null)
   }
 
   /**
