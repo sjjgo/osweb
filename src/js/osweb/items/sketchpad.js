@@ -40,7 +40,7 @@ export default class Sketchpad extends GenericResponse {
     this.elements = []
     this.vars.duration = 'keypress'
   }
-  
+
   /** Process a time out response. */
   process_response_timeout () {
     // Nothing happens
@@ -78,6 +78,18 @@ export default class Sketchpad extends GenericResponse {
     }
   }
 
+  /**
+   * Set the background color of the canvas if it is defined in the var store
+   *
+   * @memberof Sketchpad
+   */
+  _set_bg_color () {
+    const backgroundColor = this.vars.get('background')
+    if (backgroundColor) {
+      this.canvas._styles.background_color = backgroundColor
+    }
+  }
+
   /** Implements the prepare phase of an item. */
   prepare () {
     // Clear the canvas.
@@ -99,12 +111,7 @@ export default class Sketchpad extends GenericResponse {
     // Inherited.
     super.run()
 
-    // Check if background color needs to be changed
-    const backgroundColor = this.vars.get('background')
-    if (backgroundColor) {
-      this.canvas._styles.background_color = backgroundColor
-    }
-
+    this._set_bg_color()
     // Set the onset and start the stimulus response process.
     this.set_item_onset(this.canvas.show())
     this.set_sri(false)
@@ -113,6 +120,7 @@ export default class Sketchpad extends GenericResponse {
 
   * coroutine () {
     yield
+    this._set_bg_color()
     this.set_item_onset(this.canvas.show())
   }
 }
