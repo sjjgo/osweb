@@ -20,9 +20,9 @@ export default class Mouse {
 
     // Set constant properties.
     this._SYNONYM_MAP = [
-      ['1', 'left_button'],
-      ['2', 'middle_button'],
-      ['3', 'right_button'],
+      ['1', 'left_button', 'left'],
+      ['2', 'middle_button', 'middle'],
+      ['3', 'right_button', 'right'],
       ['4', 'scroll_up'],
       ['5', 'scroll_down']
     ]
