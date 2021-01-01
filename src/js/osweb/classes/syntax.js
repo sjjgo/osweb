@@ -278,6 +278,14 @@ export default class Syntax {
       var value = tokens[i]
       // Monster regex, splits into key/value pair.
       let parsed = value.split(/(?:("[^"\\]*(?:\\.[^"\\]*)*"))|(?:(\w+)=(?:(?:(-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)|(\w+))|("[^"\\]*(?:\\.[^"\\]*)*")))/gm).filter(Boolean)
+      // This is a horrifying hack to deal with the fact that the regular
+      // expression above is not unicode-safe. This means that a single
+      // unquoted word is not seen as a word when it doesn't consist of ascii
+      // characters (e.g. text=λάθος). See also:
+      // - https://github.com/open-cogsci/osweb/issues/49
+      if (parsed.length === 1 && parsed[0].startsWith('text=')) {
+        parsed = ['text', parsed[0].slice(5)]
+      }
       // parsed will have length 1 if the variable has no keyword, and will be
       // of length 2 (split over the = symbol) if the variable had a keyword
       if (parsed.length < 2) {
