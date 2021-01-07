@@ -251,14 +251,14 @@ export default class Loop extends Item {
       // Create a live matrix that takes into account the repeats and the
       // shuffles.
       this.matrix = []
-      this._cycles = []
       for (let k in cycles) {
         this.matrix.push(this.orig_matrix[cycles[k]])
-        this._cycles.push(k)
       }
-      // Perform the operations
+      // Perform the operations. This may change the number of cycles, which
+      // is why this._cycles is only determined afterwards.
       this.matrix = this._operations.reduce((mtrx, [func, args]) =>
-        func(mtrx, ...this._eval_args(args)), this.matrix)
+        func(mtrx, ...this._eval_args(args)), this.matrix)      
+      this._cycles = Array(... this.matrix.keys())
       this._initialized = true
       this._index = null
     } // end init
