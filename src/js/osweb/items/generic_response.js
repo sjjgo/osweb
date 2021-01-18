@@ -126,16 +126,14 @@ export default class GenericResponse extends Item {
   prepare_duration_keypress () {
     // Prepare a keyboard duration.
     this._keyboard = new Keyboard(this.experiment)
-    var final_duration = (this._timeout !== -1) ? this._timeout : this._duration
-    this._keyboard._set_config(final_duration, this._allowed_responses)
+    this._final_duration = (this._timeout !== -1) ? this._timeout : this._duration
   }
 
   /** Prepare the system for a mouseclick duration interval. */
   prepare_duration_mouseclick () {
     // Prepare a mouseclick duration.
     this._mouse = new Mouse(this.experiment)
-    var final_duration = (this._timeout !== -1) ? this._timeout : this._duration
-    this._mouse._set_config(final_duration, this._allowed_responses, false)
+    this._final_duration = (this._timeout !== -1) ? this._timeout : this._duration
   }
 
   /** Prepare the system for a timeout. */
@@ -143,6 +141,15 @@ export default class GenericResponse extends Item {
     let timeout = this.vars.get('timeout')
     if (timeout === null) return
     this._timeout = (typeof timeout === 'number') ? timeout : -1
+  }
+  
+  /** Sets duration and allowed responses on the response object. **/
+  configure_response_objects() {
+    if (this.vars.duration === 'keypress') {
+      this._keyboard._set_config(this._final_duration, this._allowed_responses)
+    } else if (this.vars.duration === 'mouseclick') {
+      this._mouse._set_config(this._final_duration, this._allowed_responses, false)
+    }
   }
 
   /** Select the type of stimulus response processing. */
@@ -279,6 +286,7 @@ export default class GenericResponse extends Item {
     this.prepare_timeout()
     this.prepare_duration()
     this.prepare_allowed_responses()
+    this.configure_response_objects()
     // Inherited.
     super.prepare()
   }
