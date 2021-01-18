@@ -62,15 +62,20 @@ describe('Syntax', function () {
   })
 
   describe('parse_cmd()', function () {
-    var checkCmd = function (s, cmd, arglist, kwdict) {
+    var checkCmd = function (s, cmd, arglist, kwdict, create_expect) {
       // parse command into arguments
       let _cmd, _arglist, _kwdict;
       [_cmd, _arglist, _kwdict] = syntax.parse_cmd(s)
       expect(_cmd).toBe(cmd)
       expect(_arglist).toEqual(arglist)
       expect(_kwdict).toEqual(kwdict)
-      // translate arguments back to command
-      expect(s).toBe(syntax.create_cmd(_cmd, _arglist, _kwdict))
+      // translate arguments back to command. Some commands may recreate back
+      // to a slightly different string than the input string, in which case
+      // we specify an explicit create_expect target.
+      if (typeof create_expect === 'undefined') {
+        create_expect = s
+      }
+      expect(create_expect).toBe(syntax.create_cmd(_cmd, _arglist, _kwdict))
     }
 
     it('should parse command with arguments and keyword arguments', function () {
@@ -78,6 +83,12 @@ describe('Syntax', function () {
         'widget', [0, 0, 1, 1, 'label'], {
           text: 'Tést 123'
         })
+    })
+    it('should parse command with unquoted non-latin words', function() {
+        checkCmd('draw textline text=λάθος',
+            'draw', ['textline'], {text: 'λάθος'},
+            'draw textline text="λάθος"'
+        )
     })
     it('should parse a single command with no arguments', function () {
       checkCmd('test', 'test', [], {})
