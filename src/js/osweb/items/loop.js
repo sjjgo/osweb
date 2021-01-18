@@ -224,14 +224,14 @@ export default class Loop extends Item {
       // in a `cycles` array with a length that is a multiple of the original
       // matrix length.
       let cycles = []
-      const wholeRepeats = Math.floor(this.vars.repeat)
+      const wholeRepeats = Math.floor(this.vars.get('repeat'))
       for (let j = 0; j < wholeRepeats; j++) {
         for (let i in this.orig_matrix) {
           cycles.push(i)
         }
       }
       // Next, we add the non-integer part of the repeats to the cycles array.
-      const partialRepeats = this.vars.repeat - wholeRepeats
+      const partialRepeats = this.vars.get('repeat') - wholeRepeats
       if (partialRepeats > 0) {
         // Get an array of all cycles indices. (This syntax is like a range().)
         // For randomly ordered loops, shuffle the order of the indices.
