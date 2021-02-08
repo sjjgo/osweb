@@ -218,6 +218,7 @@ export default class Loop extends Item {
   /** Implements the run phase of an item. */
   run () {
     super.run()
+    debugger
     if (!this._initialized) {
       // The first step is to create an array of cycle indices (`cycles`). We
       // first add the integer part of the repeats to this array, which results
@@ -258,7 +259,7 @@ export default class Loop extends Item {
       // is why this._cycles is only determined afterwards.
       this.matrix = this._operations.reduce((mtrx, [func, args]) =>
         func(mtrx, ...this._eval_args(args)), this.matrix)      
-      this._cycles = Array(... this.matrix.keys())
+      this._cycles = [... this.matrix.keys()]
       this._initialized = true
       this._index = null
     } // end init
