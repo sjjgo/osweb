@@ -1,6 +1,6 @@
 {
 	"name": "osweb",
-	"version": "1.3.13",
+	"version": "1.3.14",
 	"main": "src/js/osweb/index.js",
 	"description": "Online runtime for OpenSesame experiments",
 	"license": "GPL-3.0",
@@ -12,10 +12,10 @@
 		"browser"
 	],
 	"author": "Jaap Bos",
-	"url": "https://github.com/smathot/osweb/issues",
+	"url": "https://github.com/open-cogsci/osweb/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/smathot/osweb.git"
+		"url": "https://github.com/open-cogsci/osweb.git"
 	},
 	"contributors": [
 		{
