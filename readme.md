@@ -1,6 +1,6 @@
 # OSWeb
 
-Copyright 2016-2020 Jaap Bos (@shyras), Daniel Schreij (@dschreij), and Sebastiaan Mathôt (@smathot)
+Copyright 2016-2021 Jaap Bos (@shyras), Daniel Schreij (@dschreij), and Sebastiaan Mathôt (@smathot)
 
 
 ## About
