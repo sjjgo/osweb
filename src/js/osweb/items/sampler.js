@@ -47,11 +47,11 @@ export default class Sampler extends GenericResponse {
       // Retrieve the content from the file pool.
       this._sample = this._runner._pool[this.syntax.eval_text(this.vars.sample, this.vars, false)]
       this._sampler = new SamplerBackend(this.experiment, this._sample)
-      this._sampler.volume = this.vars.volume
-      this._sampler.duration = this.vars.duration
-      this._sampler.fade = this.vars.fade
-      this._sampler.pan = this.vars.pan
-      this._sampler.pitch = this.vars.pitch
+      this._sampler.volume = this.vars.get("volume")
+      this._sampler.duration = this.vars.get("duration")
+      this._sampler.fade = this.vars.get("fade")
+      this._sampler.pan = this.vars.get("pan")
+      this._sampler.pitch = this.vars.get("pitch")
     } else {
       // Show error message.
       this._runner._debugger.addError('No sample has been specified in sampler: ' + this.vars.sample)

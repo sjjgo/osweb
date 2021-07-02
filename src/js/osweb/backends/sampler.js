@@ -6,7 +6,7 @@ let audioCtx = null
 try {
   audioCtx = new (window.AudioContext || window.webkitAudioContext)()
 } catch (e) {
-  console.warning('Web Audio API is not supported in this browser')
+  console.warn('Web Audio API is not supported in this browser')
 }
 
 /** Class representing a sampler. */
@@ -95,14 +95,14 @@ export default class SamplerBackend {
 
       nodes.unshift(gainNode)
     } catch (e) {
-      console.warning('Unable to apply volume or gain', e)
+      console.warn('Unable to apply volume or gain', e)
     }
 
     if (this.pan) {
       try {
         nodes.unshift(new StereoPannerNode(audioCtx, { pan: this.pan }))
       } catch (e) {
-        console.warning('Unable to apply panning', e)
+        console.warn('Unable to apply panning', e)
       }
     }
 
