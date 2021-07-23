@@ -150,6 +150,8 @@ export default class Events {
      * @param {Object} event - system keydown event.
      */
   _keyDown (event) {
+    // Ignore events if the key was already down. This is to avoid keypresses
+    if (event.repeat) return
     // Store the keyboard event.
     this._keyDownEvent = {
       event: event,
@@ -177,6 +179,7 @@ export default class Events {
      * @param {Object} event - system keyup event.
      */
   _keyUp (event) {
+    if (event.repeat) return
     // Only select this event when the collection mode is set for this.
     if ((this._state === constants.TIMER_WAIT) && ((this._keyPressMode === constants.RELEASES_ONLY) ||
       (this._keyPressMode === constants.PRESSES_AND_RELEASES))) {
