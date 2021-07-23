@@ -112,7 +112,8 @@ export default class Runner {
         scaleMode: this._scaleMode = 'noScale',
         source: this._source = null,
         subject: this._subject = null,
-        target: this._target = null
+        target: this._target = null,
+        welcomeText: this._welcomeText = null
       } = context)
 
       // Set up the introscreen.

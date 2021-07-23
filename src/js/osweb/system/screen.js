@@ -260,18 +260,18 @@ export default class Screen {
   }
 
   /** Check if the experiment must be clicked to start. */
-  _setupClickScreen () {
+  _setupClickScreen (text) {
     // Check if the experiment must be clicked to start.
     if (this._click === true) {
       // Update inroscreen.
-
-      const text = `
-    Your participation to this experiment should be anonymous.
+      if ((typeof text === "undefined") || (text.length === 0)) {
+        text = `
+    Your participation in this experiment should be anonymous.
         Never provide any personal or sensitive information
             (e.g. credit card or social security numbers).
 
                     Click here with the mouse to begin.`
-
+      }
       this._updateIntroScreen(text)
 
       // Setup the mouse click response handler.

@@ -21,7 +21,7 @@ export default class Parameters {
       this._runner._experiment.set_subject(this._runner._subject)
 
       // Parameters are processed, next phase.
-      this._runner._screen._setupClickScreen()
+      this._runner._screen._setupClickScreen(this._runner._welcomeText)
     } else {
       // Update inroscreen.
       this._runner._screen._updateIntroScreen('Retrieving input parameters.')
@@ -127,6 +127,6 @@ export default class Parameters {
     }
 
     // Parameters are processed, next phase.
-    this._runner._screen._setupClickScreen()
+    this._runner._screen._setupClickScreen(this._runner._welcomeText)
   }
 }
