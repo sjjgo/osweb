@@ -31,7 +31,6 @@ export default class SamplerBackend {
     this.fade = (typeof fade === 'undefined') ? 0 : fade
     this.pan = (typeof pan === 'undefined') ? 0 : pan
     this.pitch = (typeof pitch === 'undefined') ? 1 : pitch
-
     try {
       this.sample = source.data.cloneNode()
     } catch (e) {
@@ -114,5 +113,13 @@ export default class SamplerBackend {
     }
 
     return nodes.shift(0)
+  }
+  
+  onEnded () {
+  /**
+   * Clears the source tag of the sample to free up the WebMediaPlayer. See
+   * also: https://github.com/open-cogsci/osweb/issues/69
+   **/ 
+    this.sample.src = ""
   }
 }
