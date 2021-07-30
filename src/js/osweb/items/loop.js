@@ -218,7 +218,6 @@ export default class Loop extends Item {
   /** Implements the run phase of an item. */
   run () {
     super.run()
-    debugger
     if (!this._initialized) {
       // The first step is to create an array of cycle indices (`cycles`). We
       // first add the integer part of the repeats to this array, which results
