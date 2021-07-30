@@ -20,6 +20,9 @@ import {
   weight
 } from '../util/matrix'
 
+import parse from "csv-parse/lib/sync"
+
+
 /**
  * Class representing a sequence item.
  * @extends Item
@@ -86,6 +89,8 @@ export default class Loop extends Item {
     this.vars.order = 'random'
     this.vars.item = ''
     this.vars.break_if = 'never'
+    this.vars.source = 'table'
+    this.vars.source_file = ''
     this._index = 0
     this._operations = []
     this._initialized = false
@@ -204,15 +209,30 @@ export default class Loop extends Item {
 
   /** Implements the prepare phase of an item. */
   prepare () {
-
     // Make sure the item to run exists.
     if (this.experiment.items._items[this.vars.item] === 'undefined') {
       this._runner._debugger.addError('Could not find an item which is called by loop item: ' +
       this.name + ' (' + this.vars.item + ')')
     }
+    if (this.vars.get('source') === 'file') this.parseFileSource()
     this._initialized = false
     super.prepare()
     this.set_item_onset()
+  }
+  
+  /** Reads the loop table from a csv file in the file pool **/
+  parseFileSource () {
+    let src = this.vars.get('source_file')
+    if (!src.toLowerCase().endsWith('.csv')) {
+      throw 'Only csv files are supported as source files by loop items'
+    }
+    if (typeof this._runner._pool[src] === 'undefined') {
+      throw 'Loop item refers to non-existing source file: ' + src
+    }
+    this.orig_matrix = parse(
+      this._runner._pool[src].data,
+      {columns: true, skip_empty_lines: true}
+    )
   }
 
   /** Implements the run phase of an item. */
