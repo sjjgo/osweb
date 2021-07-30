@@ -48,7 +48,8 @@
 		"pixi.js": "^5.2.4",
 		"random-seed": "^0.3.0",
 		"webfontloader": "^1.6.28",
-		"csv-parse": "^4.16.0"
+		"csv-parse": "^4.16.0",
+		"random-ext": "^2.7.1"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.9.6",

@@ -1,4 +1,5 @@
 import CanvasClass from '../backends/canvas'
+import randomExt from 'random-ext'
 
 /**
  * A proxy handler for the VarStore that maps properties onto calls to
@@ -25,23 +26,25 @@ class VarStoreHandler {
  */
 export default class JavaScriptWorkspace {
   /**
-     * Create a JavaScript workspace.
-     * @param {Object} experiment - The experiment item to which the item belongs.
-     */
+   * Create a JavaScript workspace.
+   * @param {Object} experiment - The experiment item to which the item belongs.
+   */
   constructor (experiment) {
     this.experiment = experiment
     this.vars_proxy = new Proxy(this.experiment.vars, new VarStoreHandler())
   }
 
   /**
-     * Executes JavaScript code in the workspace.
-     * @param {String} js - JavaScript code to execute
-     */
+   * Executes JavaScript code in the workspace.
+   * @param {String} js - JavaScript code to execute
+   */
   _eval (js) {
     // eslint-disable-next-line no-unused-vars
     const vars = this.vars_proxy
     // eslint-disable-next-line no-unused-vars
     const Canvas = () => new CanvasClass(this.experiment)
+    // eslint-disable-next-line no-unused-vars
+    const random = randomExt
     // eslint-disable-next-line no-eval
     eval(js)
   }
