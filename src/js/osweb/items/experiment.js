@@ -56,6 +56,7 @@ export default class Experiment extends Item {
     this.vars.height = 768
     this.vars.background = 0x000000
     this.vars.foreground = 0xFFFFFF
+    this.vars.penwidth = 1
 
     // Font parameters.
     this.vars.font_size = 18
