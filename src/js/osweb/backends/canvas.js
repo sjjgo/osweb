@@ -346,7 +346,7 @@ export default class Canvas {
     var circle = new Graphics()
     circle.lineStyle(elementStyle.penwidth, elementStyle.color, 1)
     if (elementStyle.fill === true) {
-      circle.beginFill(elementStyle.background_color)
+      circle.beginFill(elementStyle.color)
       circle.drawCircle(0, 0, r)
       circle.endFill()
     } else {
@@ -406,7 +406,7 @@ export default class Canvas {
     var ellipse = new Graphics()
     ellipse.lineStyle(elementStyle.penwidth, elementStyle.color, 1)
     if (elementStyle.fill === true) {
-      ellipse.beginFill(elementStyle.background_color)
+      ellipse.beginFill(elementStyle.color)
       ellipse.drawEllipse(0, 0, (w / 2), (h / 2))
       ellipse.endFill()
     } else {
@@ -612,7 +612,7 @@ export default class Canvas {
    * @param {Number} y - The y coordinate of the element.
    * @param {Number} scale - The scaling factor of the element.
    */
-  image (fname, center, x, y, scale) {
+  image (fname, center, x, y, scale, rotation) {
     // Get image from file pool.
     const name = this.experiment._runner._syntax.remove_quotes(fname)
     const path = this.experiment._runner._pool[name]
@@ -626,15 +626,12 @@ export default class Canvas {
     canvas.height = img.height
     const ctx = canvas.getContext('2d')
     ctx.drawImage(img, 0, 0)
-
     const texture = Texture.from(canvas)
     this._textures.push(texture)
     const sprite = new Sprite(texture)
-
-    // Scale the image.
     sprite.scale.x = scale
     sprite.scale.y = scale
-
+    sprite.angle = rotation
     // Position the image
     if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
       sprite.x = x - (sprite.width / 2)
@@ -643,8 +640,6 @@ export default class Canvas {
       sprite.x = x
       sprite.y = y
     }
-
-    // Add the image to the stage.
     this._container.addChild(sprite)
   }
 

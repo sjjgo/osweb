@@ -32,7 +32,6 @@ export default class Circle extends BaseElement {
 
     // Create a styles object containing style information
     var styles = new Styles()
-    styles.background_color = this._properties.color
     styles.color = this._properties.color
     styles.fill = this._properties.fill
     styles.penwidth = this._properties.penwidth
