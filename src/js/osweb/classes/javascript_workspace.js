@@ -1,4 +1,4 @@
-import CanvasClass from '../backends/canvas'
+import CanvasHandler from '../classes/canvas_handler'
 import randomExt from 'random-ext'
 
 /**
@@ -19,6 +19,7 @@ class VarStoreHandler {
       : target[prop]
   }
 }
+
 
 /**
  * A workspace for executing inline JavaScript code. For now, the workspace is
@@ -42,7 +43,7 @@ export default class JavaScriptWorkspace {
     // eslint-disable-next-line no-unused-vars
     const vars = this.vars_proxy
     // eslint-disable-next-line no-unused-vars
-    const Canvas = () => new CanvasClass(this.experiment)
+    const Canvas = () => new CanvasHandler(this.experiment)
     // eslint-disable-next-line no-unused-vars
     const random = randomExt
     // eslint-disable-next-line no-eval
