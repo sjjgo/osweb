@@ -611,6 +611,7 @@ export default class Canvas {
    * @param {Number} x - The x coordinate of the element.
    * @param {Number} y - The y coordinate of the element.
    * @param {Number} scale - The scaling factor of the element.
+   * @param {Number} rotation - Clockwise rotation in degrees.
    */
   image (fname, center, x, y, scale, rotation) {
     // Get image from file pool.
@@ -629,16 +630,17 @@ export default class Canvas {
     const texture = Texture.from(canvas)
     this._textures.push(texture)
     const sprite = new Sprite(texture)
+    sprite.anchor.set(.5)
     sprite.scale.x = scale
     sprite.scale.y = scale
     sprite.angle = rotation
     // Position the image
     if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
-      sprite.x = x - (sprite.width / 2)
-      sprite.y = y - (sprite.height / 2)
-    } else {
       sprite.x = x
       sprite.y = y
+    } else {
+      sprite.x = x + (sprite.width / 2)
+      sprite.y = y + (sprite.height / 2)
     }
     this._container.addChild(sprite)
   }

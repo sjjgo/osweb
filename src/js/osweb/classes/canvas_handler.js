@@ -146,7 +146,11 @@ export default class CanvasHandler {
     if (typeof vertices === "undefined") {
       throw "vertices is a required parameter for Canvas.polygon()"
     }
-    this._canvas.polygon(vertices, this._element_style(styleArgs))
+    // Adjust the coordinates of all vertices
+    const v = []
+    for (const [x, y] of vertices)
+      v.push([x + this._xc, y + this._yc])
+    this._canvas.polygon(v, this._element_style(styleArgs))
   }
   
   rect({x = -50, y = -25, w = 100, h = 50, ...styleArgs} = {}) {
@@ -159,7 +163,7 @@ export default class CanvasHandler {
   }
   
   show() {
-    this._canvas.show()
+    return this._canvas.show()
   }
   
   text({text, center = true, x = 0, y = 0, ...styleArgs} = {}) {
