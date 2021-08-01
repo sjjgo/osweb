@@ -7,9 +7,10 @@ import Canvas from '../backends/canvas.js'
  **/ 
 export default class CanvasHandler {
 
-  constructor (experiment) {
+  constructor (experiment, styleArgs = {}) {
     this._canvas = new Canvas(experiment)
     this._style = new Styles(experiment)
+    Object.assign(this._style, styleArgs)
     this._xc = this._canvas.width / 2
     this._yc = this._canvas.height / 2
   }

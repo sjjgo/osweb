@@ -43,7 +43,8 @@ export default class JavaScriptWorkspace {
     // eslint-disable-next-line no-unused-vars
     const vars = this.vars_proxy
     // eslint-disable-next-line no-unused-vars
-    const Canvas = () => new CanvasHandler(this.experiment)
+    const Canvas = (styleArgs = {}) => new CanvasHandler(
+        this.experiment, styleArgs)
     // eslint-disable-next-line no-unused-vars
     const random = randomExt
     // eslint-disable-next-line no-eval
