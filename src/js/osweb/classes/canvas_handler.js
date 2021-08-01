@@ -22,7 +22,6 @@ export default class CanvasHandler {
     const style = new Styles()
     Object.assign(style, this._style)
     Object.assign(style, styleArgs)
-    console.log(style)
     return style
   }
   
