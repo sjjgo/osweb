@@ -1,5 +1,12 @@
 import CanvasHandler from '../classes/canvas_handler'
+import JavaScriptWorkspaceAPI from '../classes/javascript_workspace_api'
 import randomExt from 'random-ext'
+import {
+    range as pyRange,
+    enumerate as pyEnumerate,
+    items as pyItems,
+    zip as pyZip,
+    zipLongest as pyZipLongest} from 'pythonic'
 
 /**
  * A proxy handler for the VarStore that maps properties onto calls to
@@ -33,6 +40,7 @@ export default class JavaScriptWorkspace {
   constructor (experiment) {
     this.experiment = experiment
     this.vars_proxy = new Proxy(this.experiment.vars, new VarStoreHandler())
+    this.api = new JavaScriptWorkspaceAPI(this.experiment)
   }
 
   /**
@@ -40,14 +48,27 @@ export default class JavaScriptWorkspace {
    * @param {String} js - JavaScript code to execute
    */
   _eval (js) {
-    // eslint-disable-next-line no-unused-vars
     const vars = this.vars_proxy
-    // eslint-disable-next-line no-unused-vars
     const Canvas = (styleArgs = {}) => new CanvasHandler(
         this.experiment, styleArgs)
-    // eslint-disable-next-line no-unused-vars
     const random = randomExt
-    // eslint-disable-next-line no-eval
+    // Expose common functions. Binding is necessary to provide the correct
+    // scope for the functions.
+    const reset_feedback = this.api.reset_feedback.bind(this.api)
+    const set_subject_nr = this.api.set_subject_nr.bind(this.api)
+    const sometimes = this.api.sometimes.bind(this.api)
+    const xy_from_polar = this.api.xy_from_polar.bind(this.api)
+    const xy_to_polar = this.api.xy_to_polar.bind(this.api)
+    const xy_distance = this.api.xy_distance.bind(this.api)
+    const xy_circle = this.api.xy_circle.bind(this.api)
+    const xy_grid = this.api.xy_grid.bind(this.api)
+    const xy_random = this.api.xy_random.bind(this.api)
+    // Expose the pythonic functions
+    const range = pyRange
+    const zip = pyZip
+    const zipLongest = pyZipLongest
+    const enumerate = pyEnumerate
+    const items = pyItems
     eval(js)
   }
 }
