@@ -804,7 +804,7 @@ export default class Canvas {
     // Create a polygon element.
     var polygon = new Graphics()
     polygon.lineStyle(elementStyle.penwidth, elementStyle.color, 1)
-    if (elementStyle.fill === true) polygon.beginFill(elementStyle.background_color)
+    if (elementStyle.fill === true) polygon.beginFill(elementStyle.color)
     polygon.drawPolygon(path)
     if (elementStyle.fill === true) polygon.endFill()
 
@@ -830,7 +830,7 @@ export default class Canvas {
     var rectangle = new Graphics()
     rectangle.lineStyle(elementStyle.penwidth, elementStyle.color, 1)
     if (elementStyle.fill === true) {
-      rectangle.beginFill(elementStyle.background_color)
+      rectangle.beginFill(elementStyle.color)
       rectangle.drawRect(0, 0, w, h)
       rectangle.endFill()
     } else {
