@@ -15,6 +15,25 @@ export default class CanvasHandler {
     this._yc = this._canvas.height / 2
   }
   
+  get color() {return this._style.color}
+  set color(val) {this._style.color = val}
+  get background_color() {return this._style.background_color}
+  set background_color(val) {this._style.background_color = val}
+  get fill() {return this._style.fill}
+  set fill(val) {this._style.fill = val}
+  get html() {return this._style.html}
+  set html(val) {this._style.html = val}
+  get font_family() {return this._style.font_family}
+  set font_family(val) {this._style.font_family = val}
+  get font_size() {return this._style.font_size}
+  set font_size(val) {this._style.font_size = val}
+  get font_italic() {return this._style.font_italic}
+  set font_italic(val) {this._style.font_italic = val}
+  get font_bold() {return this._style.font_bold}
+  set font_bold(val) {this._style.font_bold = val}
+  get font_underline() {return this._style.font_underline}
+  set font_underline(val) {this._style.font_underline = val}
+  
   _element_style (styleArgs) {
     if (typeof styleArgs === "undefined") {
       return this._style
