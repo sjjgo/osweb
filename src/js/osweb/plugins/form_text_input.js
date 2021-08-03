@@ -1,30 +1,30 @@
-import FormBase from './form_base.js'
+import FormHTML from './form_html.js'
 
 /**
- * Class representing a form text display item.
- * @extends Item
+ * Class representing a form text input item.
+ * @extends FormHTML
  */
-export default class FormTextInput extends FormBase {
+export default class FormTextInput extends FormHTML {
+
   /**
-     * Create a form which shows some simple text.
-     * @param {Object} pExperiment - The experiment item to which the item belongs.
-     * @param {String} pName - The unique name of the item.
-     * @param {String} pScript - The script containing the properties of the item.
-     */
-  constructor (experiment, name, script) {
-    // Inherited.
-    super(experiment, name, script, 'form_text_input', 'A simple text input form')
+   * Is called when a key is pressed in the textarea, and accepts the form
+   * input when return is pressed by setting the response variable to the
+   * value of the textarea.
+   **/
+  checkReturnPress (event) {
+    if (event.keyCode !== 13)
+      return
+    this.experiment.vars.set(this.vars.form_var, this._textArea.value)
+    this.resumeOSWeb()
   }
 
-  /** Implements the complete phase of an item. */
-  _complete () {
-    // Inherited.
-    super._complete()
-  }
-
-  /** Implements the run phase of an item. */
-  run () {
-    // Inherited.
-    super.run()
+  formElements () {
+    const title = this.element('h1', this.vars.get('form_title'), 1 / 8)
+    const question = this.element('p', this.vars.get('form_question'), 1 / 8)
+    question.style.textAlign = 'left'
+    this._textArea = this.element('textarea', null, 6 / 8)
+    this.applyTheme(this._textArea, false)
+    this._textArea.onkeypress = this.checkReturnPress.bind(this)
+    return [title, question, this._textArea]
   }
 }

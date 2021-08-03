@@ -1,71 +1,43 @@
-import FormBase from './form_base.js'
-import FormWidget from '../widgets/form.js'
+import FormHTML from './form_html.js'
 
 /**
- * Class representing a consent form.
- * @extends FormBase
+ * Class representing a form consent item.
+ * @extends FormHTML
  */
-export default class FormConsent extends FormBase {
-  /**
-     * Create a form which shows some simple text.
-     * @param {Object} experiment - The experiment item to which the item belongs.
-     * @param {String} name - The unique name of the item.
-     * @param {String} script - The script containing the properties of the item.
-     */
-  constructor (experiment, name, script) {
-    // Inherited.
-    super(experiment, name, script, 'form_consent', 'A simple consent form')
+export default class FormConsent extends FormHTML {
 
-    // Define and set the public properties.
-    this.decline_form = null
+  onDecline () {
+    alertify.error(this.vars.get('decline_message'))
   }
-
-  /** Implements the complete phase of an item. */
-  _complete () {
-    // Check if the concense form is completed or the decline sub form.
-    if (this.decline_form !== null) {
-      // Hide the default form.
-      this.decline_form._canvas._container.visible = false
-      this.form._canvas._container.visible = true
-      this.decline_form = null
-
-      // Re-run the consense form.
-      this.run()
-    } else {
-      // Check if the consent status is shown.
-      if (this.experiment.vars.get('accept_status') === true) {
-        // Accept button is selected, check the checkbox status.
-        if (this.experiment.syntax.remove_quotes(this.experiment.vars.get('checkbox_status')) === this.vars.get('checkbox_text')) {
-          // Go to the next form, so continue the closure.
-          super._complete()
-        } else {
-          console.log('decline form')
-          // Create the decline message form.
-          this.decline_form = new FormWidget(this.experiment, [1], [1], 10, ['50', '50', '50', '50'], 'gray', this, 5000, false)
-
-          // Create the text widget.
-          var widget = this.experiment.items._newWidgetClass('label', this.decline_form, { text: this.vars.decline_message, center: 'yes' })
-
-          // Add the widget to the parent form.
-          this.decline_form.set_widget(widget, [0, 0], 1, 1)
-
-          // Hide the default form.
-          this.form._canvas._container.visible = false
-          this.decline_form._canvas._container.visible = true
-
-          // Execute the decline form.
-          this.decline_form._exec(null)
-        }
-      } else {
-        // Decline button pressed, stop the experiment.
-        this.experiment._runner.exit()
-      }
+  
+  onAccept () {
+    if (this._checkbox.checked) {
+      this.resumeOSWeb()
+      return
     }
+    this.onDecline()
   }
 
-  /** Implements the run phase of an item. */
-  run () {
-    // Inherited.
-    super.run()
+  formElements () {
+    const title = this.element('h1', this.vars.get('form_title'), 1 / 7)
+    const text = this.element('p', this.vars.get('form_text'), 4 / 7)
+    text.style.textAlign = 'left'
+    const [checkboxContainer, checkbox] = this.checkbox(
+      'checkbox', this.vars.get('checkbox_text'), 1 / 7)
+    this._checkbox = checkbox
+    const buttonContainer = this.element('div', null, 1 / 7)
+    const acceptButton = this.element('input', null, null, 1 / 3)
+    acceptButton.value = this.vars.get('accept_text')
+    acceptButton.type = 'button'
+    acceptButton.onclick = this.onAccept.bind(this)
+    const declineButton = this.element('input', null, null, 1 / 3)
+    declineButton.value = this.vars.get('decline_text')
+    declineButton.type = 'button'
+    declineButton.onclick = this.onDecline.bind(this)
+    buttonContainer.append(acceptButton)
+    buttonContainer.append(declineButton)
+    this.applyTheme(acceptButton, true)
+    this.applyTheme(declineButton, true)
+    return [title, text, checkboxContainer, buttonContainer]
   }
 }

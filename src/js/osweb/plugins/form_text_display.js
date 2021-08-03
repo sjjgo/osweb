@@ -1,30 +1,20 @@
-import FormBase from './form_base.js'
+import FormHTML from './form_html.js'
 
 /**
  * Class representing a form text display item.
- * @extends FormBase
+ * @extends FormHTML
  */
-export default class FormTextDisplay extends FormBase {
-  /**
-     * Create a form which shows some simple text.
-     * @param {Object} experiment - The experiment item to which the item belongs.
-     * @param {String} name - The unique name of the item.
-     * @param {String} script - The script containing the properties of the item.
-     */
-  constructor (experiment, name, script) {
-    // Inherited.
-    super(experiment, name, script, 'form_text_display', 'A simple text display form')
-  }
+export default class FormTextDisplay extends FormHTML {
 
-  /** Implements the complete phase of an item. */
-  _complete () {
-    // Inherited.
-    super._complete()
-  }
-
-  /** Implements the run phase of an item. */
-  run () {
-    // Inherited.
-    super.run()
+  formElements () {
+    const title = this.element('h1', this.vars.get('form_title'), 1 / 6)
+    const text = this.element('p', this.vars.get('form_text'), 4 / 6)
+    text.style.textAlign = 'left'
+    const okButton = this.element('input', null, 1 / 6, 1 / 3)
+    okButton.type = 'button'
+    okButton.value = this.vars.get('ok_text')
+    okButton.onclick = this.resumeOSWeb.bind(this)
+    this.applyTheme(okButton, true)
+    return [title, text, okButton]
   }
 }

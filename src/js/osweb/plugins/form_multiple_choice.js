@@ -1,51 +1,58 @@
-import FormBase from './form_base.js'
+import FormHTML from './form_html.js'
 
 /**
- * Class representing a form with multiple choise item.
- * @extends FormBase
+ * Class representing a form-mulitple-choice item.
+ * @extends FormHTML
  */
-export default class FormMultipleChoice extends FormBase {
-  /**
-     * Create a form which shows some simple text.
-     * @param {Object} experiment - The experiment item to which the item belongs.
-     * @param {String} name - The unique name of the item.
-     * @param {String} script - The script containing the properties of the item.
-     */
-  constructor (experiment, name, script) {
-    // Inherited.
-    super(experiment, name, script, 'form_multiple_choice', 'A simple multiple choise item')
-  }
+export default class FormMultipleChoice extends FormHTML {
 
-  /** Implements the complete phase of an item. */
-  _complete () {
-    // Inherited.
-    super._complete()
-  }
-
-  /** Implements the run phase of an item. */
-  prepare () {
-    //
-    this.vars.cols = '1;1;'
-    this.vars.rows = '1;1;'
-    this._widgets = []
-
-    this._widgets.push(this.syntax.split('0 0 2 1 label text="[form_title]"'))
-    this._widgets.push(this.syntax.split('0 1 2 1 label center=no text="[question]"'))
-    // Add the individual labels.
-    for (var i = 0; i < this.options.length; i++) {
-      this._widgets.push(this.syntax.split('0 ' + String(i + 2) + ' 2 1 checkbox group=group1 center=no text="' + this.options[i] + '"'))
-      this.vars.rows = this.vars.rows + '1;'
+  resumeOSWeb () {
+    const values = []
+    for (const box of this._boxes) {
+        if (box.checked)
+            values.push(box.value)
     }
-    this._widgets.push(this.syntax.split('0 ' + String(i + 3) + ' 2 2 button text="[button_text]"'))
-    this.vars.rows = this.vars.rows + '1;1;'
-
-    // Inherited prepare.
-    super.prepare()
+    this.experiment.vars.set(
+        this.vars.form_var,
+        (values.length > 0) ? values.join(';') : 'no'
+    )
+    super.resumeOSWeb()
+  }
+  
+  _boxClicked () {
+    if (!this._hasOkButton)
+      this.resumeOSWeb()
   }
 
-  /** Implements the run phase of an item. */
-  run () {
-    // Inherited.
-    super.run()
+  formElements () {
+    this._hasOkButton = (this.vars.get('advance_immediately') === 'no' || boxType === 'checkbox')
+    const elements = []
+    this._boxes = []
+    // Create an array of non-empty options
+    const options = String(this.vars.get('options')).split('\n').filter(
+        option => option .trim().length > 0)
+    const boxType = (this.vars.get('allow_multiple') === 'no') ? 'radio' : 'checkbox'
+    const elementHeight = 1 / (options.length + (this._hasOkButton ? 3 : 2))
+    const title = this.element('h1', this.vars.get('form_title'), elementHeight, 1)
+    elements.push(title)
+    const question = this.element('p', this.vars.get('question'), elementHeight, 1)
+    elements.push(question)
+    for (const option of options) {
+      const [container, box] = this.checkbox(boxType, option, elementHeight)
+      box.name = 'options'
+      box.onclick = this._boxClicked.bind(this)
+      this._boxes.push(box)
+      elements.push(container)
+    }
+    if (this._hasOkButton) {
+      const okButton = this.element('input', null, elementHeight, 1 / 3)
+      okButton.style.width = '100%'
+      this.applyTheme(okButton, true)
+      okButton.type = 'button'
+      okButton.value = this.vars.get('button_text')
+      okButton.onclick = this.resumeOSWeb.bind(this)
+      elements.push(okButton)
+    }
+    return elements
   }
 }
