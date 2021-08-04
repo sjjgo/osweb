@@ -143,7 +143,7 @@ export default class ItemStore {
       // Unknown class definition, show error message.
       this._runner._debugger.addError('The item "' + type + '" is not yet supported by osweb', {
         notify: true,
-        url: 'https://osdoc.cogsci.nl/manual/osweb/#supported-functionality'
+        url: 'https://osdoc.cogsci.nl/manual/osweb/osweb/#supported-functionality'
       })
       this._runner.exit()
     }
