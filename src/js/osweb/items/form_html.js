@@ -93,6 +93,9 @@ export default class FormHTML extends Item {
    * @param {string} label - a text label
    * @param {number} height
    * @param {number} width
+   * @param {boolean} inherit
+   * @return {!Array<Object>}
+   **/
   checkbox (boxType, label, height, width=1, inherit=true) {
     const box = this.element('input', null, null, null)
     box.type = boxType

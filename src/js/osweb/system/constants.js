@@ -15,7 +15,18 @@ import Logger from '../items/logger.js'
 // Audio
 import Sampler from '../items/sampler.js'
 import Synth from '../items/synth.js'
-
+// Plugins
+import AdvancedDelay from '../items/advanced_delay.js'
+import FormConsent from '../items/form_consent.js'
+import InlineHTML from '../items/inline_html.js'
+import FormMultipleChoice from '../items/form_multiple_choice.js'
+import FormTextDisplay from '../items/form_text_display.js'
+import FormTextInput from '../items/form_text_input.js'
+import MediaPlayer from '../items/media_player.js'
+import Notepad from '../items/notepad.js'
+import RepeatCycle from '../items/repeat_cycle.js'
+import ResetFeedback from '../items/reset_feedback.js'
+import TouchResponse from '../items/touch_response.js'
 // Elements
 import Arrow from '../elements/arrow.js'
 import Circle from '../elements/circle.js'
@@ -28,18 +39,6 @@ import Noise from '../elements/noise.js'
 import Rect from '../elements/rect.js'
 import TextLine from '../elements/textline.js'
 
-// Plugins
-import AdvancedDelay from '../plugins/advanced_delay.js'
-import FormConsent from '../plugins/form_consent.js'
-import InlineHTML from '../plugins/inline_html.js'
-import FormMultipleChoice from '../plugins/form_multiple_choice.js'
-import FormTextDisplay from '../plugins/form_text_display.js'
-import FormTextInput from '../plugins/form_text_input.js'
-import MediaPlayer from '../plugins/media_player.js'
-import Notepad from '../plugins/notepad.js'
-import RepeatCycle from '../plugins/repeat_cycle.js'
-import ResetFeedback from '../plugins/reset_feedback.js'
-import TouchResponse from '../plugins/touch_response.js'
 
 /**
  * this variable maps the string representation of each element to the corresponding
