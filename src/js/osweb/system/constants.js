@@ -31,6 +31,7 @@ import TextLine from '../elements/textline.js'
 // Plugins
 import AdvancedDelay from '../plugins/advanced_delay.js'
 import FormConsent from '../plugins/form_consent.js'
+import InlineHTML from '../plugins/inline_html.js'
 import FormMultipleChoice from '../plugins/form_multiple_choice.js'
 import FormTextDisplay from '../plugins/form_text_display.js'
 import FormTextInput from '../plugins/form_text_input.js'
@@ -53,6 +54,7 @@ export const itemClasses = {
   feedback: Feedback,
   inline_script: InlineScript,
   inline_javascript: InlineJavaScript,
+  inline_html: InlineHTML,
   keyboard_response: KeyboardResponse,
   mouse_response: MouseResponse,
   logger: Logger,

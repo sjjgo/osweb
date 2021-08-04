@@ -18,9 +18,19 @@ export default class FormHTML extends Item {
    * Generates an array of HTML elements that are appended to the form. Should
    * be overridden in the actual form classes.
    * @return {!Array<Object>} - an array of HTML elements
+   **/
   formElements() {
       return []
-  }  
+  }
+  
+  /**
+   * Gives HTML code to be used for the form. Should be overridden in the
+   * actual form classes.
+   * @return {string}
+   **/
+  formHTML() {
+    return null
+  }
   
   /**
    * Hides the form container and re-enables OSWeb. Also re-enablees the event
@@ -160,7 +170,10 @@ export default class FormHTML extends Item {
     this._customForm.style.height = this._paddedHeight + 'px'
     this._customForm.style.textAlign = 'center'
     for (const element of this.formElements())
-        this._customForm.append(element)
+      this._customForm.append(element)
+    const html = this.formHTML()
+    if (html !== null)
+      this._customForm.innerHTML = html
     // A container that centers the form
     this._formContainer = document.createElement('div')
     this._formContainer.style.backgroundColor = this.vars.get('background')
