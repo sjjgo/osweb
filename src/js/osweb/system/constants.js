@@ -28,20 +28,8 @@ import Noise from '../elements/noise.js'
 import Rect from '../elements/rect.js'
 import TextLine from '../elements/textline.js'
 
-// Widgets
-import ButtonWidget from '../widgets/button.js'
-import CheckBoxWidget from '../widgets/checkbox.js'
-import FormWidget from '../widgets/form.js'
-import ImageWidget from '../widgets/image_widget.js'
-import ImageButtonWidget from '../widgets/image_button.js'
-import LabelWidget from '../widgets/label.js'
-import RatingScaleWidget from '../widgets/rating_scale.js'
-import TextInputWidget from '../widgets/text_input.js'
-import Themes from '../widgets/themes.js'
-
 // Plugins
 import AdvancedDelay from '../plugins/advanced_delay.js'
-import FormBase from '../plugins/form_base.js'
 import FormConsent from '../plugins/form_consent.js'
 import FormMultipleChoice from '../plugins/form_multiple_choice.js'
 import FormTextDisplay from '../plugins/form_text_display.js'
@@ -71,6 +59,16 @@ export const itemClasses = {
   sampler: Sampler,
   synth: Synth,
   coroutines: Coroutines,
+  advanced_delay: AdvancedDelay,
+  form_consent: FormConsent,
+  form_multiple_choice: FormMultipleChoice,
+  form_text_display: FormTextDisplay,
+  form_text_input: FormTextInput,
+  media_player_mpy: MediaPlayer,
+  notepad: Notepad,
+  repeat_cycle: RepeatCycle,
+  reset_feedback: ResetFeedback,
+  touch_response: TouchResponse,
   // Elements
   arrow: Arrow,
   circle: Circle,
@@ -82,28 +80,6 @@ export const itemClasses = {
   noise: Noise,
   rect: Rect,
   textline: TextLine,
-  // Widgets
-  button_widget: ButtonWidget,
-  checkbox_widget: CheckBoxWidget,
-  form_widget: FormWidget,
-  image_button_widget: ImageButtonWidget,
-  image_widget: ImageWidget,
-  label_widget: LabelWidget,
-  rating_scale_widget: RatingScaleWidget,
-  text_input_widget: TextInputWidget,
-  themes: Themes,
-  // Plugins
-  advanced_delay: AdvancedDelay,
-  form_base: FormBase,
-  form_consent: FormConsent,
-  form_multiple_choice: FormMultipleChoice,
-  form_text_display: FormTextDisplay,
-  form_text_input: FormTextInput,
-  media_player_mpy: MediaPlayer,
-  notepad: Notepad,
-  repeat_cycle: RepeatCycle,
-  reset_feedback: ResetFeedback,
-  touch_response: TouchResponse
 }
 
 export const constants = {
