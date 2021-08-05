@@ -16,6 +16,7 @@ export default class ImageElement extends BaseElement {
     defaults.center = 1
     defaults.file = null
     defaults.scale = 1
+    defaults.rotation = 0
     defaults.x = null
     defaults.y = null
 
@@ -33,6 +34,7 @@ export default class ImageElement extends BaseElement {
 
     // Draw the image element to the canvas of the sketchpad.
     this.sketchpad.canvas.image(this._properties.file, this._properties.center,
-      this._properties.x, this._properties.y, this._properties.scale)
+      this._properties.x, this._properties.y, this._properties.scale,
+      this._properties.rotation)
   }
 }

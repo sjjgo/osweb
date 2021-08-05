@@ -614,7 +614,6 @@ export default class Canvas {
    * @param {Number} rotation - Clockwise rotation in degrees.
    */
   image (fname, center, x, y, scale, rotation) {
-    // Get image from file pool.
     const name = this.experiment._runner._syntax.remove_quotes(fname)
     const path = this.experiment._runner._pool[name]
     if (typeof (path) === 'undefined') {
@@ -631,9 +630,12 @@ export default class Canvas {
     this._textures.push(texture)
     const sprite = new Sprite(texture)
     sprite.anchor.set(.5)
-    sprite.scale.x = scale
-    sprite.scale.y = scale
-    sprite.angle = rotation
+    if (typeof scale !== 'undefined') {
+      sprite.scale.x = scale
+      sprite.scale.y = scale
+    }
+    if (typeof rotation !== 'undefined')
+      sprite.angle = rotation
     // Position the image
     if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
       sprite.x = x
