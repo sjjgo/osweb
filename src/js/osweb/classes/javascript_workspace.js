@@ -41,6 +41,7 @@ export default class JavaScriptWorkspace {
     this.experiment = experiment
     this.vars_proxy = new Proxy(this.experiment.vars, new VarStoreHandler())
     this.api = new JavaScriptWorkspaceAPI(this.experiment)
+    this._persistent = {}
   }
 
   /**
@@ -52,6 +53,8 @@ export default class JavaScriptWorkspace {
     const Canvas = (styleArgs = {}) => new CanvasHandler(
         this.experiment, styleArgs)
     const random = randomExt
+    const pool = this.experiment.pool
+    const persistent = this._persistent
     // Expose common functions. Binding is necessary to provide the correct
     // scope for the functions.
     const reset_feedback = this.api.reset_feedback.bind(this.api)
