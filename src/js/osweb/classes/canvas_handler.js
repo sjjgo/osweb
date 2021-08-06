@@ -407,7 +407,7 @@ export default class CanvasHandler {
   /**
    * Shows, or 'flips', the canvas on the screen.
    *
-   * @return <Number> A timestamp of the time at which the canvas appeared on
+   * @return {Number} A timestamp of the time at which the canvas appeared on
    *     the screen.
    *
    * @name Canvas.show

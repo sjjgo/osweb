@@ -70,15 +70,15 @@ export default class JavaScriptWorkspaceAPI {
    * var xy1 = xy_from_polar(100, 45)
    * var xy2 = xy_from_polar(100, -45)
    * var c = Canvas()
-   * c.line(xy1[0], xy1[1], -xy1[0], -xy1[1])
-   * c.line(xy2[0], xy2[1], -xy2[0], -xy2[1])
+   * c.line({sx: xy1[0], sy: xy1[1], ex: -xy1[0], ey: -xy1[1]})
+   * c.line({sx: xy2[0], sy: xy2[1], ex: -xy2[0], ey: -xy2[1]})
    * c.show()
    * // ECMA 6
    * let x1, y1 = xy_from_polar(100, 45)
    * let x2, y2 = xy_from_polar(100, -45)
    * let c = Canvas()
-   * c.line(x1, y1, -x1, -y1)
-   * c.line(x2, y2, -x2, -y2)
+   * c.line({sx: x1, sy: y1, ex: -x1, ey: -y1})
+   * c.line({sx: x2, sy: y2, ex: -x2, ey: -y2})
    * c.show()
    **/
   xy_from_polar(rho, phi, pole=[0, 0]) {
@@ -163,15 +163,15 @@ export default class JavaScriptWorkspaceAPI {
    * var points = xy_circle(8, 100)
    * for (var i in points) {
    *   var x = points[i][0]
-   *   var y = points[i][0]
-   *   c.rect(x - 10, y - 10, 20, 20)
+   *   var y = points[i][1]
+   *   c.rect({x: x - 10, y: y - 10, w: 20, h: 20})
    * }
    * c.show()
    * // ECMA 6 (browser only)
    * let c = Canvas()
    * c.fixdot()
    * for (let [x, y] of xy_circle(8, 100)) {
-   *   c.rect(x - 10, y - 10, 20, 20)
+   *   c.rect({x: x - 10, y: y - 10, w: 20, h: 20})
    * }
    * c.show()
    **/
@@ -208,15 +208,15 @@ export default class JavaScriptWorkspaceAPI {
    * var points = xy_grid(4, 100)
    * for (var i in points) {
    *   var x = points[i][0]
-   *   var y = points[i][0]
-   *   c.rect(x - 10, y - 10, 20, 20)
+   *   var y = points[i][1]
+   *   c.rect({x: x - 10, y: y - 10, w: 20, h: 20})
    * }
    * c.show()
    * // ECMA 6 (browser only)
    * let c = Canvas()
    * c.fixdot()
    * for (let [x, y] in xy_grid(4, 100)) {
-   *   c.rect(x-10, y-10, 20, 20)
+   *   c.rect({x: x-10, y: y-10, w: 20, y: 20})
    * }
    * c.show()
    **/
@@ -286,15 +286,15 @@ export default class JavaScriptWorkspaceAPI {
    * var points = xy_random(50, 500, 500, 40)
    * for (var i in points) {
    *   var x = points[i][0]
-   *   var y = points[i][0]
-   *   c.rect(x - 10, y - 10, 20, 20)
+   *   var y = points[i][1]
+   *   c.rect({x: x - 10, y: y - 10, w: 20, h: 20})
    * }
    * c.show()   
    * // ECMA 6 (browser only)
    * let c = Canvas()
    * c.fixdot()
    * for (let [x, y] of xy_random(50, 500, 500, 40)) {
-   *   c.rect(x-10, y-10, 20, 20)
+   *   c.rect({x: x-10, y: y-10, w: 20, h: 20})
    * }
    * c.show()
    **/
