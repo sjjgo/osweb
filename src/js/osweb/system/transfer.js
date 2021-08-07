@@ -210,7 +210,6 @@ export default class Transfer {
           item.data = ado
           item.type = 'video'
         } else if (['csv','txt','md'].includes(ext.toLowerCase())) {
-          console.log('.csv')
           item.type = 'text'
           currentFile.blob.text().then(text => (item.data = text))
         }
