@@ -102,18 +102,7 @@ export default class Canvas {
       return this._styles
     } else {
       const styles = new Styles()
-      // Shorter notation: (but keeping old code in comments if this does not work as expected)
       Object.assign(styles, styleArgs)
-      // styles._background_color = (typeof (styleArgs._background_color) !== 'undefined') ? styleArgs._background_color : 0x000000
-      // styles._bidi = (typeof (styleArgs._bidi) !== 'undefined') ? styleArgs._bidi : false
-      // styles._color = (typeof (styleArgs._color) !== 'undefined') ? styleArgs._color : 0xffffff
-      // styles._fill = (typeof (styleArgs._fill) !== 'undefined') ? styleArgs._fill : false
-      // styles._font_bold = (typeof (styleArgs._font_bold) !== 'undefined') ? styleArgs._font_bold : true
-      // styles._font_family = (typeof (styleArgs._font_family) !== 'undefined') ? styleArgs._font_family : 'Arial'
-      // styles._font_italic = (typeof (styleArgs._font_italic) !== 'undefined') ? styleArgs._font_italic : false
-      // styles._font_size = (typeof (styleArgs._font_size) !== 'undefined') ? styleArgs._font_size : 24
-      // styles._font_underline = (typeof (styleArgs._font_underline) !== 'undefined') ? styleArgs._font_underline : false
-      // styles._penwidth = (typeof (styleArgs._penwidth) !== 'undefined') ? styleArgs._penwidth : 1
       return styles
     }
   }
@@ -558,9 +547,9 @@ export default class Canvas {
 
         // Recalculate the color values.
         const color = {
-          r: color1.r * amp + color2.r * (1.0 - amp),
-          g: color1.g * amp + color2.g * (1.0 - amp),
-          b: color1.b * amp + color2.b * (1.0 - amp)
+          r: color1[0] * amp + color2[0] * (1.0 - amp),
+          g: color1[1] * amp + color2[1] * (1.0 - amp),
+          b: color1[2] * amp + color2[2] * (1.0 - amp)
         }
 
         // Set the color values at pixel level.
@@ -757,9 +746,9 @@ export default class Canvas {
 
         // Recalculate the collor values.
         const color = {
-          r: color1.r * amp + color2.r * (1.0 - amp),
-          g: color1.g * amp + color2.g * (1.0 - amp),
-          b: color1.b * amp + color2.b * (1.0 - amp)
+          r: color1[0] * amp + color2[0] * (1.0 - amp),
+          g: color1[1] * amp + color2[1] * (1.0 - amp),
+          b: color1[2] * amp + color2[2] * (1.0 - amp)
         }
 
         // Set the color values at pixel level.

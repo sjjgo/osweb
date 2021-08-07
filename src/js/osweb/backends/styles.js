@@ -1,4 +1,13 @@
 import isInteger from 'lodash/isInteger'
+import isArray from 'lodash/isArray'
+import colorConvert from 'color-convert'
+
+const colorHex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i
+const colorRGB255 = /rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/i
+const colorRGBPerc = /rgb\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*\)/i
+const colorHSV = /hsv\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*\)/i
+const colorHSL = /hsl\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*%\s*\)/i
+const colorLAB = /lab\(\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*,\s*([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*\s*\)/i
 
 /** Class representing a style container. */
 export default class Styles {
@@ -34,76 +43,58 @@ export default class Styles {
   }
 
   /**
-   * Converts a color value (string, number of rgb to a numeric value for use in PIXI.
+   * Converts a color value to a numeric value for use in PIXI. This should
+   * accept all color specifications as described here:
+   * - https://osdoc.cogsci.nl/3.3/manual/python/canvas/#colors
    * @param {String|Number|Object} color - The color to convert.
    * @return {Number} - The color value.
    */
-
   _convertColorValue (color) {
-    var convertedColor = 0
-    // Check if the color definition is a number or a string value.
-    if (typeof (color) === 'string') {
-      // Check if the string is a hex string.
-      if (/(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(color) === true) {
-        // Check if hex string is 3 of 6 character based.
-        if (color.length === 4) {
-          // Expand the color to 6 characters.
-          convertedColor = parseInt('0x' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3], 16)
-        } else {
-          convertedColor = parseInt('0x' + color[1] + color[2] + color[3] + color[4] + color[5] + color[6], 16)
-        }
-      } else if (typeof this._DEFAULT_COLOURS[color.toLowerCase()] !== 'undefined') {
-        // Value is a constant color name, convert it.
-        convertedColor = parseInt(this._DEFAULT_COLOURS[color.toLowerCase()], 16)
-      } else if (color.slice(0, 3).toLowerCase() === 'rgb') {
-        // Value is a rgb string number, convert it.
-        var a = color.split('(')[1].split(')')[0]
-        a = a.split(',')
-        var b = a.map(function (x) {
-          // For each array element
-          if (/^\d+(\.\d+)?%$/.test(x)) {
-            // pass
-            x = x.slice(0, -1)
-            x = Math.round((parseInt(x) / 100) * 255)
-            x = x.toString(16)
-          } else {
-            // fail
-            x = parseInt(x).toString(16) // Convert to a base16 string
-          }
-          return (x.length === 1) ? '0' + x : x // Add zero if we get only one character
-        })
-        convertedColor = parseInt('0x' + b.join(''))
-      }
-    } else if (this._isInt(color) === true) {
-      if (color < 256) {
-        // Luminant value, so convert it to gray scale.
-        convertedColor = (256 * 256 * color) + (256 * color) + color
-      } else {
-        // Luminant values above 255 are not supported, return white.
-        convertedColor = 16843008
-      }
-    }
-    // Return the converted color as nubmer value.
-    return convertedColor
+    const [r, g, b] = this._convertColorValueToRGB(color).map(Math.round)
+    return 65536 * r + 256 * g + b
+  }
+  
+  /**
+   * Extracts three float numbers from a color based on a regular expression
+   * that matches three float numbers.
+   * @param {String} color
+   * @return {Array<Number>}
+   **/
+  _matchFloats(color, re) {
+    const m = color.match(re)
+    return [m[1], m[4], m[7]].map(Number)
   }
 
   _convertColorValueToRGB (color) {
-    // Convert the color to numeric values.
-    var convertedColor = this._convertColorValue(color)
-    // Convert colors to rgb format.
-    return {
-      r: convertedColor >> 16,
-      g: convertedColor >> 8 & 0xFF,
-      b: convertedColor & 0xFF
+    if (typeof (color) === 'string') {
+      const rgb = colorConvert.keyword.rgb(color)
+      if (typeof rgb !== 'undefined')
+        return rgb
+      if (colorHex.test(color) === true)
+        return colorConvert.hex.rgb(color)
+      if (colorRGB255.test(color) === true)
+        return color.match(colorRGB255).slice(1, 4).map(Number)
+      if (colorRGBPerc.test(color) === true)
+        return this._matchFloats(color, colorRGBPerc).map(
+            perc => perc * 2.55)
+      if (colorHSV.test(color) === true)
+        return colorConvert.hsv.rgb(this._matchFloats(color, colorHSV))
+      if (colorHSL.test(color) === true)
+        return colorConvert.hsl.rgb(this._matchFloats(color, colorHSL))
+      if (colorLAB.test(color) === true)
+        return colorConvert.lab.rgb(this._matchFloats(color, colorLAB))
+      if (!isNaN(Number(color)))  // For single numbers a strings
+        color = Number(color)
     }
+    if (isInteger(color))
+      return [color, color, color]
+    if (isArray(color) && color.length == 3)
+      return color.map(Number)
+    throw 'Invalid color specification: ' + color + ' (' + typeof color + ')'
   }
 
   get rgb () {
-    return {
-      r: this._background_color >> 16,
-      g: this._background_color >> 8 & 0xFF,
-      b: this._background_color & 0xFF
-    }
+    return this._convertColorValue(this._background_color)
   }
 
   set rgb (val) {

@@ -474,16 +474,4 @@ describe('Canvas', () => {
       })
     })
   })
-
-  // describe('images', () => {
-  //   it('should draw images at various scales and points of origin', () => {
-  //     refreshCanvas()
-  //     // Add image to filepool
-  //     const testImg = new Image()
-  //     testImg.src = '../_resources/spongebob'
-  //     experiment._runner._pool['spongebob'] = {data: testImg}
-
-  //     canvas.image('spongebob', cx, cy)
-  //   })
-  // })
 })
