@@ -74,8 +74,8 @@ export default class JavaScriptWorkspaceAPI {
    * c.line({sx: xy2[0], sy: xy2[1], ex: -xy2[0], ey: -xy2[1]})
    * c.show()
    * // ECMA 6
-   * let x1, y1 = xy_from_polar(100, 45)
-   * let x2, y2 = xy_from_polar(100, -45)
+   * let [x1, y1] = xy_from_polar(100, 45)
+   * let [x2, y2] = xy_from_polar(100, -45)
    * let c = Canvas()
    * c.line({sx: x1, sy: y1, ex: -x1, ey: -y1})
    * c.line({sx: x2, sy: y2, ex: -x2, ey: -y2})
@@ -111,7 +111,7 @@ export default class JavaScriptWorkspaceAPI {
    * var rho = rho_phi[0]
    * var phi = rho_phi[1]
    * // ECMA 6 (browser only)
-   * let rho, phi = xy_to_polar(100, 100)
+   * let [rho, phi] = xy_to_polar(100, 100)
    **/
   xy_to_polar(x, y, pole=[0, 0]) {
     if (typeof x !== "number")
