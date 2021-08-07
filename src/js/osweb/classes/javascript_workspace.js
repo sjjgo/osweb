@@ -1,6 +1,8 @@
 import CanvasHandler from '../classes/canvas_handler'
 import JavaScriptWorkspaceAPI from '../classes/javascript_workspace_api'
 import randomExt from 'random-ext'
+import colorConvert from 'color-convert'
+import parse from "csv-parse/lib/sync"
 import {
     range as pyRange,
     enumerate as pyEnumerate,
@@ -49,10 +51,10 @@ export default class JavaScriptWorkspace {
    * @param {String} js - JavaScript code to execute
    */
   _eval (js) {
+    // OSWeb objects
     const vars = this.vars_proxy
     const Canvas = (styleArgs = {}) => new CanvasHandler(
         this.experiment, styleArgs)
-    const random = randomExt
     const pool = this.experiment.pool
     const persistent = this._persistent
     // Expose common functions. Binding is necessary to provide the correct
@@ -66,6 +68,10 @@ export default class JavaScriptWorkspace {
     const xy_circle = this.api.xy_circle.bind(this.api)
     const xy_grid = this.api.xy_grid.bind(this.api)
     const xy_random = this.api.xy_random.bind(this.api)
+    // Expose useful libraries
+    const random = randomExt
+    const convert = colorConvert
+    const csvParse = parse
     // Expose the pythonic functions
     const range = pyRange
     const zip = pyZip
