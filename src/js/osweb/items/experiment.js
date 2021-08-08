@@ -114,6 +114,7 @@ export default class Experiment extends Item {
   from_string (script) {
     // Split the string into an array of lines.
     if (script !== null) {
+      script = script.replace(/\r\n|\r|\n/g, '\n')  // convert line endings
       this._source = script.split('\n')
       var l = this._source.shift()
       while (l != null) {
