@@ -363,7 +363,7 @@ export default class Screen {
     // Update the introscreen elements.
     if (this._active === true) {
       const center = this.screenCenter()
-      this._statusText.text = text
+      this._statusText.text = text.replace(/<br \/>/g, '\n')
       this._statusText.position.set(
         center.x - this._statusText.width / 2,
         center.y
