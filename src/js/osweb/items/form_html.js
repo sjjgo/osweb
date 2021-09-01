@@ -37,8 +37,8 @@ export default class FormHTML extends Item {
    * listeners.
    **/
   resumeOSWeb () {
-      this._formContainer.style.display = 'none'
-      this._osweb.style.display = 'block'
+      this._formContainer.remove()
+      this._osweb.style.display = 'flex'
       window.addEventListener('keydown', runner._events._keyDownHandler)
       window.addEventListener('keyup', runner._events._keyUpHandler)
       this._complete()
@@ -159,6 +159,7 @@ export default class FormHTML extends Item {
     // The main container that contains the form elements
     this._customForm = document.createElement('div')
     this._customForm.style.color = this.vars.get('foreground')
+    this._customForm.style.backgroundColor = this.vars.get('background')
     this._customForm.style.fontSize = this.vars.get('font_size') + 'px'
     this._customForm.style.fontFamily = this._fontFamily
     if (this.vars.get('font_bold')=== 'yes')
@@ -179,7 +180,6 @@ export default class FormHTML extends Item {
       this._customForm.innerHTML = html
     // A container that centers the form
     this._formContainer = document.createElement('div')
-    this._formContainer.style.backgroundColor = this.vars.get('background')
     this._formContainer.style.justifyContent = 'center'
     this._formContainer.style.alignItems = 'center'
     this._formContainer.style.display = 'flex'
