@@ -24,7 +24,18 @@ export default class FormTextInput extends FormHTML {
     question.style.textAlign = 'left'
     this._textArea = this.element('textarea', null, 6 / 8)
     this.applyTheme(this._textArea, false)
-    this._textArea.onkeypress = this.checkReturnPress.bind(this)
     return [title, question, this._textArea]
+  }
+  
+  _activateTextArea () {
+    this._textArea.focus()
+    this._textArea.onkeypress = this.checkReturnPress.bind(this)
+  }
+  
+  run () {
+    super.run()
+    // The textarea is activate after a very short timeout. This avoid previous
+    // keypress from being entered as text immediately.
+    setTimeout(this._activateTextArea.bind(this), 10)
   }
 }
