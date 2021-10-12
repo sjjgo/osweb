@@ -14,6 +14,11 @@ export default class FormHTML extends Item {
     this.from_string(script)
   }
   
+  reset() {
+    super.reset()
+    this.vars.margins = '50;50;50;50'
+  }
+  
   /**
    * Generates an array of HTML elements that are appended to the form. Should
    * be overridden in the actual form classes.
