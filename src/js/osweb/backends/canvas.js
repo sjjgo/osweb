@@ -900,6 +900,7 @@ export default class Canvas {
       const textBlock = {
         element_style: elementStyle,
         height: 0,
+        prev_height: 0,
         row: {
           ascent: 0,
           height: 0,
