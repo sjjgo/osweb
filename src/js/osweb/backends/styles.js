@@ -67,6 +67,7 @@ export default class Styles {
 
   _convertColorValueToRGB (color) {
     if (typeof (color) === 'string') {
+      color = color.toLowerCase()
       const rgb = colorConvert.keyword.rgb(color)
       if (typeof rgb !== 'undefined')
         return rgb
