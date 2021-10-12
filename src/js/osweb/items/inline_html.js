@@ -23,8 +23,10 @@ export default class InlineHTML extends FormHTML {
    * and then resumes OSWeb.
    **/
   _submitForm() {
-    for (const input of document.getElementsByTagName('input'))
-      this.experiment.vars.set(input.name, input.value)
+    for (const input of document.getElementsByTagName('input')) {
+      if (!['checkbox', 'radio'].includes(input.type) || input.checked)
+        this.experiment.vars.set(input.name, input.value)
+    }
     this.resumeOSWeb()
   }
   
