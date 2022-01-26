@@ -9,7 +9,13 @@ OSWeb is an online runtime for OpenSesame experiments. OpenSesame is a open-sour
 
 - <http://osdoc.cogsci.nl/>
 
-The easiest way to use OSWeb in OpenSesame is using the OSWeb extension (`opensesame-extension-osweb`) which is pre-installed in most distributions of OpenSesame.
+The easiest way to use OSWeb in OpenSesame is using the OSWeb extension (`opensesame-extension-osweb`) which is pre-installed in most distributions of OpenSesame, or can be install through `pip`:
+
+    pip install opensesame-extension-osweb
+
+The source code for the extension can be found at:
+
+- <https://github.com/open-cogsci/opensesame-extension-osweb/>
 
 
 ## How to build
