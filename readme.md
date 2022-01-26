@@ -1,6 +1,6 @@
 # OSWeb
 
-Copyright 2016-2021 Jaap Bos (@shyras), Daniel Schreij (@dschreij), and Sebastiaan Mathôt (@smathot)
+Copyright 2016-2022 Jaap Bos (@shyras), Daniel Schreij (@dschreij), and Sebastiaan Mathôt (@smathot)
 
 
 ## About
@@ -14,7 +14,7 @@ The easiest way to use OSWeb in OpenSesame is using the OSWeb extension (`opense
 
 ## How to build
 
-OSWeb is built using node.js and webpack, and therefore the installation process should be pretty straightforward:
+OSWeb is built using node.js and webpack, and therefore the installation process should be pretty straightforward. Currently, node 14.18.3 and npm 6.14.15 are used for development. More recent versions are known to cause installation problems, at least on some systems.
 
 First, go to the root of the OSWEB folder and install the dependencies with the command:
 
