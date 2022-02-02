@@ -264,6 +264,7 @@ export default class Canvas {
       // Create the text element and get the dimension.
       var bounds = {}
       var textElement = new Text(htmlNode.textContent, textStyle)
+      this._textures.push(textElement)
       textElement.getBounds(false, bounds)
 
       // Get the height and descent (for vertical positioning);
@@ -980,7 +981,7 @@ export default class Canvas {
         fill: elementStyle.color
       }
       var textElement = new Text(txt, textStyle)
-
+      this._textures.push(textElement)
       if ([1, '1', true, 'yes'].indexOf(center) !== -1) {
         textElement.x = x - (textElement.width / 2)
         textElement.y = y - (textElement.height / 2)
@@ -991,6 +992,7 @@ export default class Canvas {
 
       //  Add text element to the stage.
       this._container.addChild(textElement)
+      
     }
   }
 }
