@@ -119,7 +119,8 @@ export default class SamplerBackend {
   /**
    * Clears the source tag of the sample to free up the WebMediaPlayer. See
    * also: https://github.com/open-cogsci/osweb/issues/69
-   **/ 
+   **/
+    this.source.disconnect()
     this.sample.src = ""
   }
 }
