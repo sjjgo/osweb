@@ -43,22 +43,21 @@ export default class Debugger {
    * @param {String} errorText - The error shown to the user.
    */
   addError (errorText, context = null) {
-    // Set the error flag.
     this.error = true
-
-    // Set status of the event system to break.
     this._runner._events.state = constants.TIMER_ERROR
-
-    // Throw the exception.
     console.error('OSWeb has stopped running due to a fatal error.')
-    console.error(errorText)
-
     if (isPlainObject(context)) {
       if (context.notify === true && isFunction(this._runner._onError)) {
         const url = context.url || null
         this._runner._onError(errorText, url)
       }
     }
+    const itemStack = []
+    for (let itemInfo of this._runner._itemStack._items) {
+      itemStack.push(itemInfo['item'] + '[' + itemInfo['phase'] + ']')
+    }
+    console.log('item-stack: ' + itemStack.join('.'))
+    throw errorText
   }
 
   /**

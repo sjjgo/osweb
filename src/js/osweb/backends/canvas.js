@@ -606,9 +606,8 @@ export default class Canvas {
   image (fname, center, x, y, scale, rotation) {
     const name = this.experiment._runner._syntax.remove_quotes(fname)
     const path = this.experiment._runner._pool[name]
-    if (typeof (path) === 'undefined') {
-      this.experiment._runner._debugger.addError(`"${fname}" does not exist`)
-    }
+    if (typeof (path) === 'undefined')
+      this.experiment._runner._debugger.addError(`"${fname}" does not exist in the file pool`)
     const img = path.data
     // Create a temporary canvas to make an image data array.
     const canvas = document.createElement('canvas')

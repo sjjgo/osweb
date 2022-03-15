@@ -46,6 +46,8 @@ export default class Sampler extends GenericResponse {
     if (this.vars.sample !== '') {
       // Retrieve the content from the file pool.
       this._sample = this._runner._pool[this.syntax.eval_text(this.vars.sample, this.vars, false)]
+      if (typeof (this._sample) === 'undefined')
+        this.experiment._runner._debugger.addError(`"${this.vars.sample}" does not exist in the file pool`)
       this._sampler = new SamplerBackend(this.experiment, this._sample)
       this._sampler.volume = this.vars.get("volume")
       this._sampler.duration = this.vars.get("duration")
