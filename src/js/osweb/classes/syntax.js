@@ -82,6 +82,8 @@ export default class Syntax {
    * @return {String|Number} - An number or float if variable could be converted, original value otherwise.
    */
   convert_if_numeric (value) {
+    if (value === '')
+      return value
     var result = Number(value)
     return Number.isNaN(result) ? value : result
   }
@@ -338,7 +340,7 @@ export default class Syntax {
    */
   sanitize (line, strict, allowVars) {
     // Replace quotes.
-    line = line.replace(/^"(.+(?="$))"$/, '$1')
+    line = line.replace(/^"(.*(?="$))"$/, '$1')
 
     // Replace slashes and return result.
     return this.strip_slashes(line)

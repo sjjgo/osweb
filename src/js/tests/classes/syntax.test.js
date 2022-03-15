@@ -69,6 +69,9 @@ describe('Syntax', function () {
       expect(_cmd).toBe(cmd)
       expect(_arglist).toEqual(arglist)
       expect(_kwdict).toEqual(kwdict)
+      // Don't validate by parsing another string and checking the outcome
+      if (create_expect === null)
+        return
       // translate arguments back to command. Some commands may recreate back
       // to a slightly different string than the input string, in which case
       // we specify an explicit create_expect target.
@@ -111,6 +114,12 @@ describe('Syntax', function () {
     it('should not parse contents of a (non-keyword arg) string value', function () {
       checkCmd('run correct_sound "[correct]=1"',
         'run', ['correct_sound', '[correct]=1'], {})
+    })
+    it('should be able to handle empty strings', function () {
+      checkCmd('test test=""',
+        'test', [], {'test': ''},
+        null
+      )
     })
     it('should be able to handle escaped backslashes', function () {
       checkCmd('test "\\"quoted\\""',
