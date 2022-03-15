@@ -37,7 +37,17 @@ export default class Convertor {
   parseLine (line) {
     // Split a line into items and process them.
     var items = line.match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g)
-
+    if (this.variable !== null) {
+      // If we're currently inside a multiline variable, check whether the
+      // variable ends.
+      if (items !== null && items[0] === '__end__') {
+        this.item.vars[this.variableName] = this.variable
+        this.variable = null
+      } else {
+        this.variable.push(line)
+      }
+      return
+    }
     // if defined process a single line.
     if (items !== null) {
       // Select action on first token.
@@ -107,27 +117,13 @@ export default class Convertor {
       default:
         // check for multiline variables.
         if ((items[0].length > 5) && (items[0].substr(0, 2) === '__') && (items[0].substr(-2) === '__')) {
-          // Start of end of the multiline variable.
-          if (items[0] === '__end__') {
-            this.item.vars[this.variableName] = this.variable
-            this.variable = null
-          } else {
-            this.variableName = items[0].substr(2, items[0].length - 4)
-            this.variable = []
-          }
-        } else {
-          if (this.variable !== null) {
-            this.variable.push(line)
-          }
+          this.variableName = items[0].substr(2, items[0].length - 4)
+          this.variable = []
         }
       }
     } else {
-      if (this.variable !== null) {
-        this.variable.push('')
-      } else {
-        // Return to default level.
-        this.item = this.runner._experiment
-      }
+      // Return to default level.
+      this.item = this.runner._experiment
     }
   }
 
