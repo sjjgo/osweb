@@ -55,27 +55,24 @@ export default class Sketchpad extends GenericResponse {
     this.variables = {}
     this.comments = []
     this.reset()
-
-    // Split the string into an array of lines.
-    if (script !== null) {
-      const lines = script.split('\n')
-      for (let i = 0; i < lines.length; i++) {
-        if ((lines[i] !== '') && (this.parse_variable(lines[i]) === false)) {
-          const tokens = this.syntax.split(lines[i])
-          if ((tokens.length > 0) && (tokens[0] === 'draw')) {
-            if (this.experiment.items._isClass(tokens[1]) === true) {
-              var element = this.experiment.items._newElementClass(tokens[1], this, lines[i])
-              this.elements.push(element)
-            } else {
-              this.experiment._runner._debugger.addError('Failed to parse definition: ' + tokens[1])
-            }
-          }
+    if (script === null)
+      return
+    const lines = script.split('\n')
+    for (let line of lines) {
+      if ((line === '') || (this.parse_variable(line) !== false))
+        continue
+      const tokens = this.syntax.split(line)
+      if ((tokens.length > 0) && (tokens[0] === 'draw')) {
+        if (this.experiment.items._isClass(tokens[1]) === true) {
+          var element = this.experiment.items._newElementClass(tokens[1], this, line)
+          this.elements.push(element)
+        } else {
+          this.experiment._runner._debugger.addError('Failed to parse definition: ' + tokens[1])
         }
       }
-
-      // Sort the elements usin the z-index.
-      this.elements.sort(this._compare)
     }
+    // Sort the elements usin the z-index.
+    this.elements.sort(this._compare)
   }
 
   /**
