@@ -1,23 +1,27 @@
 import {
   constants
 } from '../system/constants.js'
+import ResponseDevice from './response_device.js'
 
 /** Class representing a keyboard device. */
-export default class Keyboard {
+export default class Keyboard extends ResponseDevice {
   /**
    * Create an object which represents a keyboard device.
    * @param {Object} experiment - The experiment to which the logger belongs.
    * @param {Number} timeOut - Duration in ms for time out.
    * @param {Array} keyList - List of acceptable response keys.
+   * @extends ResponseDevice   
    */
   constructor (experiment, timeOut, keyList) {
     // Create and set private properties.
+    super()
     this._experiment = experiment // Anchor to the experiment object.
     this._keyList = (typeof keyList === 'undefined') ? [] : keyList // List of acceptable response keys.
     this._timeOut = (typeof timeOut === 'undefined') ? null : timeOut // Duration in millisecond for time-out.
 
     // Set constant properties.
     this._SYNONYM_MAP = [
+      ['None', 'none'],  // timeout
       ['space', ' ', 'SPACE'],
       ['"', 'quotedbl', 'QUOTEDBL'],
       ['!', 'exclaim', 'EXCLAIM'],
@@ -156,23 +160,6 @@ export default class Keyboard {
     ]
   }
 
-  /**
-   * Convert all response values to their default values (remove synonyms).
-   * @param {Array} responses - A list of response values.
-   * @return {Array} - List of default values for the given responses.
-   */
-  _get_default_from_synonym (responses) {
-    const defaults = []
-    let synonyms
-    for (let i = 0; i < responses.length; i++) {
-      synonyms = this._synonyms(responses[i])
-      if (typeof synonyms === 'undefined') {
-        throw new ReferenceError(`Unknown key '${responses[i]}'`)
-      }
-      defaults.push(synonyms[0])
-    }
-    return defaults
-  }
 
   /**
    * Set the configuration for the keyboard backend.
@@ -183,31 +170,6 @@ export default class Keyboard {
     // Set the properties.
     this._keyList = keyList
     this._timeOut = timeOut
-  }
-
-  /**
-   * Convert a response value to its default value (remove synonym).
-   * @param {String} button - A response.
-   * @return {String|Null} - Default value of the response.
-   */
-  _synonyms (button) {
-    if (typeof button !== 'undefined') {
-      for (let i = 0; i < this._SYNONYM_MAP.length; i++) {
-        for (let j = 0; j < this._SYNONYM_MAP[i].length; j++) {
-          if (this._SYNONYM_MAP[i][j] === button) {
-            return this._SYNONYM_MAP[i]
-          }
-        }
-      }
-    } else {
-      return null
-    }
-  }
-
-  /** Clear all pending keyboard input. */
-  flush () {
-    // Always returns false because flusihing is not possible.
-    return false
   }
 
   /**

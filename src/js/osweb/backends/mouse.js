@@ -1,18 +1,21 @@
 import {
   constants
 } from '../system/constants.js'
+import ResponseDevice from './response_device.js'
 
 /** Class representing a mouse device. */
-export default class Mouse {
+export default class Mouse extends ResponseDevice {
   /**
    * Create an object which represents a mouse device.
    * @param {Object} experiment - The experiment to which the logger belongs.
    * @param {Number} timeOut - Duration in ms for time out.
    * @param {Array} buttonList - List of acceptable response buttons.
    * @param {Boolean} visible - Toggle for showing the mouse cursor.
+   * @extends ResponseDevice
    */
   constructor (experiment, timeOut, buttonList, visible) {
     // Create and set public properties.
+    super()
     this._experiment = experiment
     this._timeOut = (typeof timeOut === 'undefined') ? null : timeOut
     this._buttonList = (typeof buttonList === 'undefined') ? null : buttonList
@@ -20,27 +23,13 @@ export default class Mouse {
 
     // Set constant properties.
     this._SYNONYM_MAP = [
+      ['None', 'none'],  // timeout
       ['1', 'left_button', 'left'],
       ['2', 'middle_button', 'middle'],
       ['3', 'right_button', 'right'],
       ['4', 'scroll_up'],
       ['5', 'scroll_down']
     ]
-  }
-
-  /**
-   * Convert all response values to their default values (remove synonyms).
-   * @param {Array} responses - A list of response values.
-   * @return {Array} - List of default values for the given responses.
-   */
-  _get_default_from_synonym (responses) {
-    // Return the default synonym value from a response.
-    var defaults = []
-    for (var i = 0; i < responses.length; i++) {
-      var synonym = this._synonyms(responses[i])
-      defaults.push(synonym[0])
-    }
-    return defaults
   }
 
   /**
@@ -54,31 +43,6 @@ export default class Mouse {
     this._timeOut = timeOut
     this._buttonList = buttonList
     this._visible = visible
-  }
-
-  /**
-   * Convert a response value to its default value (remove synonym).
-   * @param {String} button - A response.
-   * @return {String|Null} - Default value of the response or null if none.
-   */
-  _synonyms (button) {
-    if (typeof button !== 'undefined') {
-      for (var i = 0; i < this._SYNONYM_MAP.length; i++) {
-        for (var j = 0; j < this._SYNONYM_MAP[i].length; j++) {
-          if (this._SYNONYM_MAP[i][j] === button) {
-            return this._SYNONYM_MAP[i]
-          }
-        }
-      }
-    } else {
-      return null
-    }
-  }
-
-  /** Clear all pending mouse input. */
-  flush () {
-    // Always returns false because flusihing is not possible.
-    return false
   }
 
   /**

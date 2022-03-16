@@ -59,66 +59,75 @@ export default class GenericResponse extends Item {
       }
     }
   }
+  
+  /**
+   * Converts a string of semi-colon separated responses to an array of
+   * responses.
+   **/
+  _prepare_responses (responses) {
+    if (responses === null)
+      return null
+    let response_array = String(responses).split(';')
+      .map(item => (typeof item === 'string')
+        ? item.replace(/^"(.*)"$/g, '$1').trim()
+        : item).filter(Boolean)
+    if (response_array.length === 0)
+      return null
+    if (this.vars.duration === 'keypress') {
+        response_array = this._keyboard._get_default_from_synonym(response_array)
+      } else if (this.vars.duration === 'mouseclick') {
+        response_array = this._mouse._get_default_from_synonym(response_array)
+      }
+    return response_array
+  }
 
   /** Prepare the list with allowed responses */
   prepare_allowed_responses () {
-    // Prepare the allowed responses.
-    if (this.vars.get('allowed_responses') === null) {
-      this._allowed_responses = null
-    } else {
-      // Create a list of allowed responses that are separated by semicolons.
-      // Also trim any whitespace.
-      const allowed_responses = String(this.vars.get('allowed_responses')).split(';')
-        .map(item => (typeof item === 'string')
-          ? item.replace(/^"(.*)"$/g, '$1').trim()
-          : item).filter(Boolean)
-      if (this.vars.duration === 'keypress') {
-        // this._allowed_responses = allowed_responses;
-        this._allowed_responses = this._keyboard._get_default_from_synonym(allowed_responses)
-      } else if (this.vars.duration === 'mouseclick') {
-        // For mouse responses, we don't check if the allowed responses make sense.
-        this._allowed_responses = this._mouse._get_default_from_synonym(allowed_responses)
-      }
-
-      // If allowed responses are provided, the list should not be empty.
-      if (this._allowed_responses.length === 0) {
-        this.experiment._runner._debugger.addError(
-          'Defined responses are not valid in keyboard_response: ' +
-          this.name + ' (' + this.vars.get('allowed_responses') + ')')
-      }
+    this._allowed_responses = this._prepare_responses(this.vars.get('allowed_responses'))
+    if ((this._allowed_responses !== null) && (this._allowed_responses.length === 0)) {
+      this.experiment._runner._debugger.addError(
+        'Defined responses are not valid in keyboard_response: ' +
+        this.name + ' (' + this.vars.get('allowed_responses') + ')')
+    }
+  }
+  
+  /** Prepare the list with correct responses */
+  prepare_correct_responses () {
+    this._correct_responses = this._prepare_responses(this.vars.get('correct_response'))
+    if ((this._correct_responses !== null) && (this._correct_responses.length === 0)) {
+      this.experiment._runner._debugger.addError(
+        'Correct response is not valid in keyboard_response: ' +
+        this.name + ' (' + this.vars.get('correct_response') + ')')
     }
   }
 
   // Prepare the duration of the stimulus interaction. */
   prepare_duration () {
-    // Get duration.
     this._duration = this.syntax.remove_quotes(this.vars.get('duration'))
-
-    // Prepare the duration.
-    if (this._duration !== null) {
-      if ((this._duration === 'keypress') || (this._duration === 'mouseclick') ||
-                (this._duration === 'sound') || (this._duration === 'video')) {
-        this._duration = -1
-        if (this.vars.duration === 'keypress') {
-          this.prepare_duration_keypress()
-          this._responsetype = constants.RESPONSE_KEYBOARD
-        } else if (this.vars.duration === 'mouseclick') {
-          this.prepare_duration_mouseclick()
-          this._responsetype = constants.RESPONSE_MOUSE
-        } else if (this.vars.duration === 'sound') {
-          this._responsetype = constants.RESPONSE_SOUND
-        } else if (this.vars.duration === 'video') {
-          this._responsetype = constants.RESPONSE_VIDEO
-        }
-      } else {
-        // Prepare a duration in milliseconds
-        this._duration = Number(this._duration)
-        if (this._duration === 0) {
-          this._responsetype = constants.RESPONSE_NONE
-        } else {
-          this._responsetype = constants.RESPONSE_DURATION
-        }
+    if (this._duration === null)
+      return
+    if ((this._duration === 'keypress') || (this._duration === 'mouseclick') ||
+        (this._duration === 'sound') || (this._duration === 'video')) {
+      this._duration = -1
+      if (this.vars.duration === 'keypress') {
+        this.prepare_duration_keypress()
+        this._responsetype = constants.RESPONSE_KEYBOARD
+      } else if (this.vars.duration === 'mouseclick') {
+        this.prepare_duration_mouseclick()
+        this._responsetype = constants.RESPONSE_MOUSE
+      } else if (this.vars.duration === 'sound') {
+        this._responsetype = constants.RESPONSE_SOUND
+      } else if (this.vars.duration === 'video') {
+        this._responsetype = constants.RESPONSE_VIDEO
       }
+      return
+    }
+    // Prepare a duration in milliseconds
+    this._duration = Number(this._duration)
+    if (this._duration === 0) {
+      this._responsetype = constants.RESPONSE_NONE
+    } else {
+      this._responsetype = constants.RESPONSE_DURATION
     }
   }
 
@@ -232,29 +241,29 @@ export default class GenericResponse extends Item {
     this.experiment.vars.set('response_time_' + this.name, this.experiment.vars.get('response_time'))
     this.experiment._start_response_interval = null
     // But correctness information is only set for dedicated response items,
-    // such as keyboard_response items, because otherwise we might confound the feedback
-    if (this.process_feedback === true) {
-      this.experiment.vars.correct = ''
-      if (this.vars.get('correct_response') !== null) {
-        // If a correct_response has been defined, we use it to determine accuracy etc.
-        if (this.synonyms !== null) {
-          if (this.synonyms.includes(this.syntax.remove_quotes(this.vars.get('correct_response').toString()))) {
-            this.experiment.vars.correct = 1
-            this.experiment.vars.total_correct = this.experiment.vars.total_correct + 1
-          } else {
-            this.experiment.vars.correct = 0
-          }
-        }
-      }
-      // Do some response bookkeeping
-      this.experiment.vars.total_response_time = this.experiment.vars.total_response_time + this.experiment.vars.response_time
-      this.experiment.vars.total_responses = this.experiment.vars.total_responses + 1
-      this.experiment.vars.accuracy = Math.round(100.0 * this.experiment.vars.total_correct / this.experiment.vars.total_responses)
-      this.experiment.vars.acc = this.experiment.vars.accuracy
-      this.experiment.vars.average_response_time = Math.round(this.experiment.vars.total_response_time / this.experiment.vars.total_responses)
-      this.experiment.vars.avg_rt = this.experiment.vars.average_response_time
-      this.experiment.vars.set('correct_' + this.name, this.experiment.vars.correct)
+    // such as keyboard_response items, because otherwise we might confound the
+    // feedback
+    if (this.process_feedback !== true)
+      return
+    if (this._correct_responses === null) {
+      this.experiment.vars.correct = 'undefined'
+      return
     }
+    this.experiment.vars.correct = 0
+    for (let cr of this._correct_responses) {
+      if (this.synonyms.includes(cr)) {
+        this.experiment.vars.correct = 1
+        this.experiment.vars.total_correct = this.experiment.vars.total_correct + 1
+        break
+      }
+    }
+    this.experiment.vars.total_response_time = this.experiment.vars.total_response_time + this.experiment.vars.response_time
+    this.experiment.vars.total_responses = this.experiment.vars.total_responses + 1
+    this.experiment.vars.accuracy = Math.round(100.0 * this.experiment.vars.total_correct / this.experiment.vars.total_responses)
+    this.experiment.vars.acc = this.experiment.vars.accuracy
+    this.experiment.vars.average_response_time = Math.round(this.experiment.vars.total_response_time / this.experiment.vars.total_responses)
+    this.experiment.vars.avg_rt = this.experiment.vars.average_response_time
+    this.experiment.vars.set('correct_' + this.name, this.experiment.vars.correct)
   }
 
   /**
@@ -286,6 +295,7 @@ export default class GenericResponse extends Item {
     this.prepare_timeout()
     this.prepare_duration()
     this.prepare_allowed_responses()
+    this.prepare_correct_responses()
     this.configure_response_objects()
     // Inherited.
     super.prepare()
