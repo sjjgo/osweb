@@ -24,6 +24,15 @@ export default class InlineHTML extends FormHTML {
    **/
   _submitForm() {
     for (const input of document.getElementsByTagName('input')) {
+      if (!input.required)
+        continue
+      if ((['checkbox', 'radio'].includes(input.type) && (!input.checked)) ||
+          (!['checkbox', 'radio'].includes(input.type) && (input.value === ''))) {
+        alert('One or more required input fields are empty or have not been checked')
+        return
+      }
+    }
+    for (const input of document.getElementsByTagName('input')) {
       if (!['checkbox', 'radio'].includes(input.type) || input.checked)
         this.experiment.vars.set(input.name, input.value)
     }
