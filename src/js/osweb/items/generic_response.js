@@ -250,11 +250,13 @@ export default class GenericResponse extends Item {
       return
     }
     this.experiment.vars.correct = 0
-    for (let cr of this._correct_responses) {
-      if (this.synonyms.includes(cr)) {
-        this.experiment.vars.correct = 1
-        this.experiment.vars.total_correct = this.experiment.vars.total_correct + 1
-        break
+    if(this.synonyms !== null){
+      for (let cr of this._correct_responses) {
+        if (this.synonyms.includes(cr)) {
+          this.experiment.vars.correct = 1
+          this.experiment.vars.total_correct = this.experiment.vars.total_correct + 1
+          break
+        }
       }
     }
     this.experiment.vars.total_response_time = this.experiment.vars.total_response_time + this.experiment.vars.response_time
